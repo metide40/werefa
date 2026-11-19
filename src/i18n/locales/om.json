@@ -1,0 +1,318 @@
+{
+  "brand": {
+    "name": "WERFA",
+    "amharicName": "ወረፋ",
+    "tagline": "Turtii dhiisaa, yaala keessan hin dhabinaa.",
+    "subTagline": "Sirna To'annoo Tarree Yaalaa Ammayyaa Itoophiyaa",
+    "pitchVenue": "Agarsiisa Giddugala Kalaqaa fi Inkiwubeeshinii Yuunivarsiitii Jimmaa — Sadaasa 2026",
+    "demoBadge": "MOODEELA AGARSIISAA",
+    "simulatedNotice": "Moodeela agarsiisa dorgommii kalaqaaf qophaa'e. Sirna hospitaala dhugaa waliin hin hidhanne."
+  },
+  "nav": {
+    "home": "Fuula Duraa",
+    "patient": "Appii Dhukkubsataa",
+    "clinic": "Daashboordii Kilinikaa",
+    "admin": "Bulchaa Sirnaa",
+    "pitchMode": "Haala Dhiheessa Agarsiisaa",
+    "resetDemo": "Agarsiisa Haaresi",
+    "language": "Afaan"
+  },
+  "priority": {
+    "EMERGENCY": "Balaa/Ariifachiisaa",
+    "URGENT": "Hatattama",
+    "NORMAL": "Idilee",
+    "clinicalNote": "Sadarkaan dursa yaalaa qorannoo kilinikaalawaa (Triage) qofaan murtaa'a; kaffaltiin hin jijjiiramu."
+  },
+  "status": {
+    "WAITING": "Eegaa Jira",
+    "ALMOST_TURN": "Dabareen Ga'uuf Xiqqaate",
+    "CALLED": "Waamamaa Jira",
+    "COMPLETED": "Xumurameera",
+    "NO_SHOW": "Kan Hin Argamne",
+    "CANCELLED": "Haqameera"
+  },
+  "connection": {
+    "online": "Intarneetii Qaba",
+    "offline": "Intarneetii Malee (Offline)",
+    "syncing": "Odeeffannoon Wal-simsiifamaa Jira...",
+    "synced": "Wal-simsiifameera",
+    "toggleSimulation": "Haala Neetwoorkii Jijjiiri",
+    "simulateOffline": "Cituu Intarneetii Fakkeessi",
+    "simulateOnline": "Intarneetii Deebisi & Wal-simsiisi",
+    "offlineNotice": "Yeroo ammaa intarneetiin hin jiru. Gaaffiin tarree keessanii bilbila kana irratti kuufamee jira; yommuu intarneetiin deebi'u ofumaan ergama.",
+    "syncSuccess": "Tikkeetota tarree offline bilbila irraa gara sarvarii hospitaalatti milkaa'inaan wal-simsiifamaniiru!"
+  },
+  "landing": {
+    "badge": "Kalaqa Teeknooloojii Fayyaa • Kibba-Lixa Itoophiyaa",
+    "heroTitle": "Yeroon keessan barbaachisaadha.",
+    "heroHighlight": "Kunuunsi keessan caalaatti barbaachisaadha.",
+    "heroDescription": "Tarree kilinikaa seenuu, adeemsa keessan hordofuu, fi yeroo xinnaa eeggachuu. Tajaajilli fayyaa salphaa ta'uu qaba.",
+    "ctaPatient": "Tarree Seenii",
+    "ctaClinic": "Kilinikaa Argadhu",
+    "ctaPitch": "Agarsiisa Daqiiqaa 10 Daanyootaaf Eegali",
+    "problemSection": {
+      "tag": "Haala Qabatamaa Hospitaalota Itoophiyaa",
+      "title": "Tarree eeguun dhukkuba biraa ta'uu hin qabu.",
+      "stat1": "Sa'aatii 3.5",
+      "stat1Desc": "Ogeessa yaalaa arguuf teessuma hospitaalaa irratti yeroo giddu-galeessaan dhumu",
+      "stat2": "74%",
+      "stat2Desc": "Ciminni dhiphina koridoorii iftoominni tarree dhabamuu irraa kan maddu",
+      "stat3": "0%",
+      "stat3Desc": "Haqni yaalaa hin gurguramu: dursi haala dhukkuba qofaan kennama"
+    },
+    "howItWorks": {
+      "tag": "Werfaan Akkamitti Hojjeta?",
+      "title": "Dhukkubsattootaaf salphaa, ogeeyyii fayyaaf saffisaa.",
+      "step1Title": "1. Manaa ykn Bakka Yaalaatti Qabadhaa",
+      "step1Desc": "Dhukkubsattoonni Afaan Oromoo, Amaariffa ykn Ingiliffaan sagaleen dubbisuun ykn unka salphaan tarree qabatu.",
+      "step2Title": "2. Sadarkaa Tarree Kallattiin Hordofaa",
+      "step2Desc": "Lakkoofsa dabaree fi yeroo eeggannoo keessan argitanii bakka dhiphina hin qabnetti boqottanii eeggattu.",
+      "step3Title": "3. Haala Dhukkubaan Dursa Kennuu",
+      "step3Desc": "Ogeeyyiin fayyaa akka jabina dhukkubaatti (Ariifachiisaa, Hatattama, Idilee) tarree ifa ta'e argatu; intarneetiin yoo citellee hin dhaabbatu."
+    },
+    "features": {
+      "tag": "Kalaqoota Ijoo",
+      "title": "Haala qabatamaa tajaajila fayyaa Itoophiyaatiif kan dizaayinii ta'e",
+      "voiceTitle": "Galmee Sagalee Afaan Sadiin",
+      "voiceDesc": "Dubbisuu kan hin dandeenyee fi maanguddootaaf galmee sagalee Afaan Oromoo fi Amaariffaan qophaa'e.",
+      "offlineTitle": "Intarneetii Malee Hojjechuu (Offline-First)",
+      "offlineDesc": "Ibsaan ykn intarneetiin yoo citeyyuu bilbilaa fi kompiitara irratti tarreen amanamaa ta'ee ittuma fufa.",
+      "ethicalTitle": "Naamusaa fi Haqa Yaalaa Qulqulluu",
+      "ethicalDesc": "Kaffaltiin tarree kutuun gonkumaa hin hayyamamu; dursi kan kennamu qorannoo yaalaa qofaani.",
+      "analyticsTitle": "Odeeffannoo To'annoo Hospitaalaa",
+      "analyticsDesc": "Dhangala'aa dhukkubsattootaa fi hojii ogeeyyii agarsiisuun yeroo eeggannoo baay'ee xiqqeessa."
+    },
+    "benefits": {
+      "forPatients": "Faayidaa Dhukkubsattootaa fi Maatiif",
+      "forPatientsList": [
+        "Teessuma hospitaalaa irratti sa'aatii 3+ qisaasa'u hambisa",
+        "Afaan dhalootaa (Afaan Oromoo fi Amaariffa) sagaleen fayyadamuun danda'ama",
+        "Manaa ykn bakka mijatutti taa'anii tarree kallattiin hordofuu",
+        "Dabareen yommuu dhiyaatu ergaa ifaa argachuu"
+      ],
+      "forClinics": "Faayidaa Kilinikootaa fi Hospitaalotaaf",
+      "forClinicsList": [
+        "Dhiphina galma eeggannoo fi carraa daddarbinsa dhibee xiqqeessa",
+        "Adeemsa dhukkubsataa waamuu saffisaa fi qindeessaa taasisa",
+        "Intarneetiin yoo citeyyuu hojiin yaalaa hin gufatu",
+        "Gabaasa hojii fi karooraaf ragaa guutuu dhiheessa"
+      ]
+    },
+    "venueBadge": "Wiirtuu Kalaqaa Hospitaala Ispeeshaalaayizdii Yuunivarsiitii Jimmaatti Kan Dhiyaate",
+    "footerText": "Werfa Health Tech • Tajaajila Fayyaa Mootummaa fi Dhuunfaa Itoophiyaatiif Kan Qophaa'e",
+    "featureVoice": "Sagalee qophaa'e",
+    "featureOffline": "Offline hojjeta",
+    "featureLanguages": "EN · አማ · OM"
+  },
+  "patient": {
+    "title": "Appii Dhukkubsataa",
+    "welcome": "Baga Gara Werfaatti Dhuftan",
+    "selectLanguage": "Afaan filadhaa / ቋንቋ ይምረጡ / Select Language",
+    "step1": "1. Hospitaala Filadhaa",
+    "step2": "2. Odeeffannoo Dhukkubsataa",
+    "step3": "3. Tikkeettii Tarree Keessanii",
+    "chooseClinic": "Dhaabbata Yaalaa Filadhaa",
+    "searchClinic": "Hospitaala ykn buufata fayyaa barbaadaa...",
+    "fullName": "Maqaa Guutuu",
+    "fullNamePlaceholder": "Fkn: Tolosaa Gammadaa / Caalaa Baqqalaa",
+    "phone": "Lakkoofsa Bilbilaa",
+    "phonePlaceholder": "+251 9X XXX XXXX",
+    "department": "Kutaa Yaalaa Barbaaddan",
+    "selectDepartment": "Kutaa yaalaa filadhaa...",
+    "reason": "Sababa Yaalaa (Filannoo)",
+    "reasonPlaceholder": "Mallattoo dhibee gabaabinaan...",
+    "priorityNote": "Hubachiisa: Haalli ariifachiisaan qorannoo duraa (Triage) irratti ogeessaan murtaa'a.",
+    "joinMethodTitle": "Akkamitti tarree qabachuu barbaaddu?",
+    "joinVoice": "Galmee Sagaleen (Afaan Oromoo / Amaariffa / Ingiliffa)",
+    "joinForm": "Unka Barreeffamaan Galmaa'i",
+    "joinQueueBtn": "Tarree Qabadhaa",
+    "joining": "Tarreen Galmaa'aa Jira...",
+    "cancelTicket": "Tikkeettii Koo Haqi",
+    "cancelConfirm": "Tikkeettii tarree keessanii haquuf mirkaneeffattuu?",
+    "cancelledSuccess": "Tikkeettiin tarree keessanii milkaa'inaan haqameera.",
+    "voice": {
+      "modalTitle": "Sagaleen Tarree Galmeessuu",
+      "listening": "Dhaggeeffachaa jirra... Maaloo maqaa fi sababa yaalaa keessanii dubbadhaa.",
+      "simulatedNotice": "Hubannoo Sagalee Agarsiisaa (Demo): Sirnichi waan dubbattan galmeesseera.",
+      "startSpeaking": "Dubbachuuf Tuqaa",
+      "stopSpeaking": "Dubbii Xumureera",
+      "recognized": "Waan Dubbatame Galmaa'e:",
+      "confirmAndJoin": "Mirkaneessi & Tikkeettii Baasi",
+      "tryAgain": "Irra Deebi'ii Dubbadhu",
+      "sampleOromo": "\"Maqaan koo Tolosaa Gammadaati, mataa bowwuu qaba, kutaa OPD barbaada.\"",
+      "sampleAmharic": "\"ስሜ ቶሎሳ ገመዳ ነው፣ የራስ ምታት አለኝ፣ የተመላላሽ ክፍል እፈልጋለሁ።\"",
+      "sampleEnglish": "\"My name is Tolosa Gemeda, I have a headache and need the Outpatient Department.\""
+    },
+    "ticket": {
+      "badge": "TIKKEETTII HOJII IRRA JIRU",
+      "ticketNo": "Lakkoofsa Tikkeettii",
+      "yourPosition": "Sadarkaa Dabaree Keessanii",
+      "peopleAhead": "Namoota Isin Dura Jiran",
+      "estimatedWait": "Yeroo Eeggannoo Tilmaamamaa",
+      "currentServing": "Yeroo Ammaa Kan Yaalamaa Jiru",
+      "joinedTime": "Sa'aatii Galmaa'e",
+      "demoQrNotice": "Koodii ykn mallattoo QR kana kutaa simannaa ykn triage'tti agarsiisaa.",
+      "offlineNotice": "Tikkeettiin kun intarneetii malee galmaa'e. Wal-simsiifamuuf eegaa jira.",
+      "refreshStatus": "Haala Isaa Haaresi",
+      "stepWaiting": "Tarree Keessa Jira",
+      "stepAlmost": "Dabareen Dhiyaateera",
+      "stepCalled": "Gara Kutaa Yaalaatti Galaa"
+    },
+    "simulationControls": {
+      "title": "To'annoo Agarsiisaa (Pitch Demo)",
+      "description": "Adeemsa tarree daanyootaaf kallattiin agarsiisuuf gargaara:",
+      "advanceBtn": "Tarree Tarkaanfii Tokko Dursi (+1)",
+      "callMeBtn": "Dabaree Koo Amma Waami",
+      "completeBtn": "Yaala Xumuri",
+      "resetBtn": "Haala Dhukkubsataa Haaresi"
+    }
+  },
+  "clinic": {
+    "title": "Daashboordii Bulchiinsa Kilinikaa",
+    "subtitle": "Qindeessaa Ogeeyyii Fayyaa Jimmaa",
+    "menu": {
+      "overview": "Waliigala",
+      "liveQueue": "Tarree Kallattii",
+      "patients": "Tarree Dhukkubsattootaa",
+      "departments": "Kutaalee Yaalaa",
+      "analytics": "Xiinxala Tajaajilaa",
+      "settings": "Qindaa'ina"
+    },
+    "metrics": {
+      "waiting": "Eegaa Kan Jiran",
+      "servedToday": "Har'a Kan Yaalaman",
+      "avgWait": "Giddu-galeessa Yeroo Eeggannoo",
+      "urgentCount": "Dhukkubbii Cimaa/Ariifachiisaa",
+      "nowServing": "Kan Yaalamaa Jiru"
+    },
+    "actions": {
+      "callNext": "Dhukkubsataa Itti Aanu Waami",
+      "markComplete": "Xumurameera Jedhi",
+      "markNoShow": "Hin Argamne Jedhi",
+      "moveToWaiting": "Gara Tarreetti Deebisi",
+      "filterDept": "Kutaan Adda Baasi",
+      "filterPriority": "Dursaan Adda Baasi",
+      "filterStatus": "Haalaan Adda Baasi",
+      "searchPatient": "Maqaa ykn lakkoofsa tikkeettiin barbaadi...",
+      "allDepartments": "Kutaalee Hunda",
+      "allPriorities": "Sadarkaa Hunda",
+      "allStatuses": "Haala Hunda",
+      "confirmCall": "Dhukkubsataa Waamuu Mirkaneessi",
+      "confirmCallMsg": "Lakkoofsa tikkeettii kana waamuuf mirkaneeffattuu:",
+      "confirmComplete": "Yaalli Xumuramuu Mirkaneessi",
+      "confirmCompleteMsg": "Dhukkubsataa kanaaf yaalli xumuramuu mirkaneessaa:",
+      "cancel": "Dhiisi",
+      "confirm": "Mirkaneessi"
+    },
+    "table": {
+      "ticket": "Tikkeettii #",
+      "patient": "Maqaa Dhukkubsataa",
+      "department": "Kutaa Yaalaa",
+      "priority": "Dursa Triage",
+      "waitDuration": "Yeroo Eege",
+      "status": "Haala",
+      "action": "Tarkaanfii"
+    },
+    "emptyQueue": "Tarree kana keessa dhukkubsataan hin jiru."
+  },
+  "admin": {
+    "title": "Bulchiinsa Fayyaa Biyyooleessaa Werfa",
+    "subtitle": "Odeeffannoo Neetwoorkii Naannoo Kibba-Lixa Itoophiyaa",
+    "metrics": {
+      "totalClinics": "Dhaabbilee Galmaa'an",
+      "totalPatients": "Dhukkubsattoota Waligalaa",
+      "patientsServed": "Yaala Xumurame",
+      "activeClinics": "Dhaabbilee Hojii Irra Jiran",
+      "avgWaitTime": "Giddu-galeessa Eeggannoo Naannichaa"
+    },
+    "clinicsTable": {
+      "title": "Dhaabbilee Fayyaa fi Haala Waliigaltee",
+      "name": "Maqaa Dhaabbataa",
+      "type": "Sadarkaa Dhaabbataa",
+      "region": "Magaalaa / Aanaa",
+      "doctors": "Ogeeyyii Hojii Irra Jiran",
+      "status": "Haala Waliigaltee",
+      "actions": "Bulchi"
+    },
+    "partnerStatus": {
+      "partner": "Hospitaala Mootummaa Michuu",
+      "active": "Maamiltoota Hojii Irra Jiran",
+      "trial": "Sadarkaa Yaalii"
+    }
+  },
+  "analytics": {
+    "title": "Xiinxala Raawwii Tarree fi Hir'ina Dhiphinaa",
+    "volumeTitle": "Dhangala'aa Sa'aatii fi Yaala Xumurame",
+    "deptTitle": "Baay'ina Dhukkubsattootaa Kutaalee Yaalaatiin",
+    "weeklyTitle": "Galmee Dijitaalaa fi Kallattii Torbee",
+    "timeSavedTitle": "Bu'aa Qusannoo Yeroo Tajaajila Fayyaa",
+    "timeSavedValue": "78% Hir'ina Yeroo Eeggannoo",
+    "timeSavedDesc": "Turtii duraan daqiiqaa 185 dhumu Werfaan gara daqiiqaa 21tti gadi buuse.",
+    "crowdingReduction": "Hir'ina Dhiphina Galmaa"
+  },
+  "notifications": {
+    "joinTitle": "Tarreen Galmaa'eera",
+    "joinMsg": "{{clinic}} irratti lakkoofsi tikkeettii {{ticketNumber}} isiniif kennameera. Yeroon tilmaamame daqiiqaa {{time}} dha.",
+    "approachingTitle": "Dabareen Keessan Dhiyaateera!",
+    "approachingMsg": "Tikkeettii {{ticketNumber}}: Namoota {{ahead}} qofatu isin dura jira. Gara {{room}} dhiyaadhaa.",
+    "calledTitle": "Waamamaa Jirtu!",
+    "calledMsg": "Tikkeettii {{ticketNumber}}: Doktoorri kutaa {{room}} keessatti isin eegaa jira.",
+    "completedTitle": "Yaalli Keessan Xumurameera",
+    "completedMsg": "Tikkeettii {{ticketNumber}} yaalli xumurameera. Werfaa fayyadamuu keessaniif galatoomaa!",
+    "offlineTitle": "Gaaffiin Bilbila Irratti Kuufame",
+    "offlineMsg": "Intarneetiin waan hin jirreef kuufamee jira. Yommuu intarneetiin dhufu ofumaan ergama.",
+    "syncTitle": "Wal-simsiifamuun Xumurame",
+    "syncMsg": "Tikkeettiin offline sarvarii kilinikaa waliin milkaa'inaan mirkanaa'eera!"
+  },
+  "pitch": {
+    "dockTitle": "QINDEESSAA AGARSIISAA (PITCH GUIDE)",
+    "dockSubtitle": "Kalaqa Yuunivarsiitii Jimmaatiif Qophaa'e",
+    "stepOf": "Tarkaanfii {{current}} / {{total}}",
+    "nextStep": "Tarkaanfii Itti Aanu",
+    "prevStep": "Tarkaanfii Duraa",
+    "close": "Qajeelfama Cufi",
+    "speakerNotesTitle": "Qabxiilee Dubbii Daanyootaaf Dhiyaatan:",
+    "steps": [
+      {
+        "title": "1. Appii Dhukkubsataa fi Rakkoo Jiru",
+        "description": "Fuula dhukkubsataatiin eegalaa. Rakkoo eeggannoo sa'aatii dheeraa hospitaalotaa fi furmaata afaan sadii ibsaa."
+      },
+      {
+        "title": "2. Sagaleen Afaan Oromootiin Galmaa'uu",
+        "description": "Afaan gara Afaan Oromootti jijjiiraa. Dhukkubsattoonni baadiyyaa ykn kanneen hin baratin sagaleen qofa akkamitti akka galmaa'an agarsiisaa."
+      },
+      {
+        "title": "3. Tikkeettii Ifa Ta'e Kallattiin",
+        "description": "Tikkeettii QR, sadarkaa tarree fi yeroo tilmaamamaa agarsiisaa. Dhukkubsataan dhiphina malee eeguu akka danda'u ibsaa."
+      },
+      {
+        "title": "4. Daashboordii Hojjettoota Kilinikaa",
+        "description": "Gara daashboordii kilinikaatti ce'aa. Dursi yaalaa haala dhukkubaatiin (Balaa, Hatattama, Idilee) qofa murtaa'uu isaa agarsiisaa."
+      },
+      {
+        "title": "5. Tarkaanfii Dhukkubsataa Waamuu",
+        "description": "Dhukkubsataa kutaa OPD waamaa. Ogeeyyiin yaalaa akkamitti haala sirna qabuun akka hojjetan dhiheessaa."
+      },
+      {
+        "title": "6. Haala Dhukkubsataa Kallattiin Jijjiiramu",
+        "description": "Gara bilbila dhukkubsataatti deebi'uun 'Waamamaa Jirtu' kan jedhu kutaa agarsiisuu waliin mul'achuu isaa agarsiisaa."
+      },
+      {
+        "title": "7. Cituu Intarneetii Fakkeessuu",
+        "description": "'Cituu Intarneetii Fakkeessi' kan jedhu tuqaa. Teeknooloojii neetwoorkii malee hojjetu agarsiisaa."
+      },
+      {
+        "title": "8. Intarneetii Malee Tarree Qabachuu",
+        "description": "Intarneetiin osoo hin jirre dhukkubsataa haaraa galmeessaa. Bilbila irratti haala amanamaadhaan kuufamuu isaa agarsiisaa."
+      },
+      {
+        "title": "9. Intarneetiin Deebi'ee Ofumaan Wal-simachuu",
+        "description": "'Intarneetii Deebisi' kan jedhu tuqaa. Odeeffannoon kuufame sarvarii hospitaalaa waliin ofumaan wal-simachuu agarsiisaa."
+      },
+      {
+        "title": "10. Xiinxala fi Carraa Daldalaa",
+        "description": "Xiinxala dhangala'aa yaalaa, hir'ina yeroo 78% fi karoora daldalaa Yuunivarsiitii Jimmaa fi Itoophiyaa guutuuf qophaa'e ibsaa."
+      }
+    ]
+  }
+}

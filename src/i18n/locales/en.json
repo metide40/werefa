@@ -1,0 +1,318 @@
+{
+  "brand": {
+    "name": "WERFA",
+    "amharicName": "ወረፋ",
+    "tagline": "Skip the wait, not the care.",
+    "subTagline": "Smart Healthcare Queue Platform for Ethiopia",
+    "pitchVenue": "Jimma University Innovation & Incubation Center Demo — Nov 20, 2026",
+    "demoBadge": "DEMO PROTOTYPE",
+    "simulatedNotice": "Prototype simulation for pitch presentation. No real hospital systems or telecom carriers are connected."
+  },
+  "nav": {
+    "home": "Home",
+    "patient": "Patient App",
+    "clinic": "Clinic Dashboard",
+    "admin": "System Admin",
+    "pitchMode": "Pitch Presentation Mode",
+    "resetDemo": "Reset Demo",
+    "language": "Language"
+  },
+  "priority": {
+    "EMERGENCY": "Emergency",
+    "URGENT": "Urgent",
+    "NORMAL": "Normal",
+    "clinicalNote": "Priority is strictly determined by clinical triage assessment (FIFO within priority level), never by payment or subscription."
+  },
+  "status": {
+    "WAITING": "Waiting",
+    "ALMOST_TURN": "Almost Your Turn",
+    "CALLED": "Being Called",
+    "COMPLETED": "Completed",
+    "NO_SHOW": "No-Show",
+    "CANCELLED": "Cancelled"
+  },
+  "connection": {
+    "online": "Online",
+    "offline": "Offline Mode",
+    "syncing": "Syncing Data...",
+    "synced": "Synchronized",
+    "toggleSimulation": "Simulate Network State",
+    "simulateOffline": "Simulate Offline Mode",
+    "simulateOnline": "Restore Internet & Sync",
+    "offlineNotice": "You are currently offline. Queue requests are stored securely on this device and will automatically sync when connection returns.",
+    "syncSuccess": "Successfully synchronized local queue tickets with clinic server!"
+  },
+  "landing": {
+    "badge": "Healthcare Innovation • South-West Ethiopia",
+    "heroTitle": "Your time matters.",
+    "heroHighlight": "Your care matters more.",
+    "heroDescription": "Join clinic queues, follow your progress, and spend less time waiting. Healthcare should be easier.",
+    "ctaPatient": "Join a Queue",
+    "ctaClinic": "Find a Clinic",
+    "ctaPitch": "Start Guided 10-Min Pitch Tour",
+    "problemSection": {
+      "tag": "The Reality in Ethiopian Hospitals",
+      "title": "Waiting in line shouldn't be a secondary illness.",
+      "stat1": "3.5 hrs",
+      "stat1Desc": "Average time spent sitting on hospital benches before consultation",
+      "stat2": "74%",
+      "stat2Desc": "Of hallway congestion caused by lack of queue transparency",
+      "stat3": "0%",
+      "stat3Desc": "Fairness compromise: triage priority is strictly medical, never commercial"
+    },
+    "howItWorks": {
+      "tag": "How Werfa Works",
+      "title": "Simple for patients, powerful for medical teams.",
+      "step1Title": "1. Join Remotely or In-Clinic",
+      "step1Desc": "Patients enter the queue in seconds through Afaan Oromoo, Amharic, or English voice prompts or a light mobile form.",
+      "step2Title": "2. Live Transparent Tracking",
+      "step2Desc": "Receive real-time position updates and estimated wait time, allowing patients to rest outside crowded hallways.",
+      "step3Title": "3. Triage-Driven Calling",
+      "step3Desc": "Clinicians see FIFO queues segmented by clinical urgency (Emergency, Urgent, Normal) with offline resilience."
+    },
+    "features": {
+      "tag": "Key Innovations",
+      "title": "Engineered for real Ethiopian healthcare conditions",
+      "voiceTitle": "Trilingual Voice Onboarding",
+      "voiceDesc": "Spoken Afaan Oromoo and Amharic queue registration designed for low-literacy accessibility and elderly patients.",
+      "offlineTitle": "Offline-First Resilience",
+      "offlineDesc": "Local IndexedDB queuing ensures hospitals and patients never stop moving during power cuts or internet outages.",
+      "ethicalTitle": "Pure Clinical Ethics",
+      "ethicalDesc": "Strict medical triage priority. No VIP fast-passes or paid queue-skipping. FIFO order within each medical level.",
+      "analyticsTitle": "Hospital Flow Intelligence",
+      "analyticsDesc": "Live department telemetry helping hospital directors optimize doctor allocation and cut wait times."
+    },
+    "benefits": {
+      "forPatients": "Benefits for Patients & Families",
+      "forPatientsList": [
+        "Eliminate 3+ hours sitting in crowded hospital waiting halls",
+        "Accessible via voice in native Afaan Oromoo & Amharic",
+        "Track queue live from home, coffee shop, or hospital garden",
+        "Clear notifications when approaching turn"
+      ],
+      "forClinics": "Benefits for Clinics & Hospitals",
+      "forClinicsList": [
+        "Drastically reduced waiting room congestion and infection transmission risk",
+        "Streamlined clinician triage workflow with instant queue calling",
+        "Continuous operation even during telecommunications fiber cuts",
+        "Comprehensive operational data for administrative reporting"
+      ]
+    },
+    "venueBadge": "Incubation Pitch at Jimma University Specialized Hospital (JUSH) Incubation Hub",
+    "footerText": "Werfa Health Tech • Designed for Ethiopian Public & Private Healthcare",
+    "featureVoice": "Voice ready",
+    "featureOffline": "Works offline",
+    "featureLanguages": "EN · አማ · OM"
+  },
+  "patient": {
+    "title": "Patient Portal",
+    "welcome": "Welcome to Werfa",
+    "selectLanguage": "Select your language / Afaan filadhaa / ቋንቋ ይምረጡ",
+    "step1": "1. Select Clinic",
+    "step2": "2. Patient Details",
+    "step3": "3. Your Ticket",
+    "chooseClinic": "Choose a Healthcare Facility",
+    "searchClinic": "Search hospital or health center...",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "e.g. Tolosa Gemeda / አሰተር አበበ",
+    "phone": "Phone Number",
+    "phonePlaceholder": "+251 9X XXX XXXX",
+    "department": "Department / Service Needed",
+    "selectDepartment": "Select department...",
+    "reason": "Reason for Visit (Optional)",
+    "reasonPlaceholder": "Brief symptoms or follow-up note...",
+    "priorityNote": "Note: Urgent clinical conditions are assessed on arrival at triage.",
+    "joinMethodTitle": "How would you like to join?",
+    "joinVoice": "Voice Registration (Afaan Oromoo / Amharic / English)",
+    "joinForm": "Standard Form Registration",
+    "joinQueueBtn": "Join Queue Now",
+    "joining": "Registering in Queue...",
+    "cancelTicket": "Cancel My Ticket",
+    "cancelConfirm": "Are you sure you want to cancel your queue ticket?",
+    "cancelledSuccess": "Your queue ticket has been cancelled.",
+    "voice": {
+      "modalTitle": "Voice Queue Registration",
+      "listening": "Listening... Please speak your name and reason for visit.",
+      "simulatedNotice": "Simulated Voice Recognition (Demo): The voice engine has captured spoken details.",
+      "startSpeaking": "Tap to Speak",
+      "stopSpeaking": "Finish Speaking",
+      "recognized": "Recognized Spoken Request:",
+      "confirmAndJoin": "Confirm & Generate Ticket",
+      "tryAgain": "Speak Again",
+      "sampleOromo": "\"Maqaan koo Tolosaa Gammadaati, mataa bowwuu qaba, kutaa OPD barbaada.\"",
+      "sampleAmharic": "\"ስሜ ቶሎሳ ገመዳ ነው፣ የራስ ምታት አለኝ፣ የተመላላሽ ክፍል እፈልጋለሁ።\"",
+      "sampleEnglish": "\"My name is Tolosa Gemeda, I have a headache and need the Outpatient Department.\""
+    },
+    "ticket": {
+      "badge": "ACTIVE QUEUE TICKET",
+      "ticketNo": "Ticket Number",
+      "yourPosition": "Your Position",
+      "peopleAhead": "People Ahead of You",
+      "estimatedWait": "Estimated Waiting Time",
+      "currentServing": "Currently Serving",
+      "joinedTime": "Time Joined",
+      "demoQrNotice": "Show this QR / ticket code at reception or triage counter.",
+      "offlineNotice": "Ticket created locally while offline. Status is Pending Synchronization.",
+      "refreshStatus": "Refresh Status",
+      "stepWaiting": "In Queue",
+      "stepAlmost": "Almost Your Turn",
+      "stepCalled": "Please Proceed to Room"
+    },
+    "simulationControls": {
+      "title": "Pitch Demo Controls",
+      "description": "Simulate queue progression in real-time for presentation:",
+      "advanceBtn": "Advance Queue (+1 Step)",
+      "callMeBtn": "Call My Ticket Now",
+      "completeBtn": "Complete Consultation",
+      "resetBtn": "Reset Patient State"
+    }
+  },
+  "clinic": {
+    "title": "Clinic Management Dashboard",
+    "subtitle": "Jimma Healthcare Staff Console",
+    "menu": {
+      "overview": "Overview",
+      "liveQueue": "Live Queue",
+      "patients": "Patient Roster",
+      "departments": "Departments",
+      "analytics": "Flow Analytics",
+      "settings": "Settings"
+    },
+    "metrics": {
+      "waiting": "Patients Waiting",
+      "servedToday": "Served Today",
+      "avgWait": "Average Wait Time",
+      "urgentCount": "Urgent/Emergency Cases",
+      "nowServing": "Currently Serving"
+    },
+    "actions": {
+      "callNext": "Call Next Patient",
+      "markComplete": "Mark Completed",
+      "markNoShow": "Mark No-Show",
+      "moveToWaiting": "Return to Queue",
+      "filterDept": "Filter Department",
+      "filterPriority": "Filter Priority",
+      "filterStatus": "Filter Status",
+      "searchPatient": "Search by patient name or ticket number...",
+      "allDepartments": "All Departments",
+      "allPriorities": "All Priorities",
+      "allStatuses": "All Statuses",
+      "confirmCall": "Confirm Calling Patient",
+      "confirmCallMsg": "Are you sure you want to call ticket",
+      "confirmComplete": "Confirm Consultation Completion",
+      "confirmCompleteMsg": "Complete consultation for patient",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "table": {
+      "ticket": "Ticket #",
+      "patient": "Patient Name",
+      "department": "Department",
+      "priority": "Triage Priority",
+      "waitDuration": "Waiting Since",
+      "status": "Status",
+      "action": "Actions"
+    },
+    "emptyQueue": "No patients currently in this queue view."
+  },
+  "admin": {
+    "title": "Werfa National Healthcare Admin",
+    "subtitle": "South-West Ethiopia Regional Network & Incubation Telemetry",
+    "metrics": {
+      "totalClinics": "Total Registered Facilities",
+      "totalPatients": "Total Patients Managed",
+      "patientsServed": "Consultations Completed",
+      "activeClinics": "Active Online Clinics",
+      "avgWaitTime": "Average Regional Wait"
+    },
+    "clinicsTable": {
+      "title": "Healthcare Facilities & Subscription Status",
+      "name": "Facility Name",
+      "type": "Facility Level",
+      "region": "City / Woreda",
+      "doctors": "Active Doctors",
+      "status": "Partnership / Status",
+      "actions": "Manage"
+    },
+    "partnerStatus": {
+      "partner": "Public Hospital Partner",
+      "active": "Active Commercial",
+      "trial": "Incubation Trial"
+    }
+  },
+  "analytics": {
+    "title": "Queue Performance & Crowding Analytics",
+    "volumeTitle": "Hourly Patient Influx vs. Consultations",
+    "deptTitle": "Patient Volume by Clinical Department",
+    "weeklyTitle": "Weekly Adoption: Digital vs. Walk-In",
+    "timeSavedTitle": "Healthcare Efficiency Impact",
+    "timeSavedValue": "78% Wait Time Reduction",
+    "timeSavedDesc": "Traditional Ethiopian referral hospital wait: 185 mins. Werfa digital queue average: 21 mins.",
+    "crowdingReduction": "Reduced Waiting Hall Crowding"
+  },
+  "notifications": {
+    "joinTitle": "Queue Registered",
+    "joinMsg": "You have joined the queue at {{clinic}} as {{ticketNumber}}. Estimated wait is {{time}} minutes.",
+    "approachingTitle": "Almost Your Turn!",
+    "approachingMsg": "Ticket {{ticketNumber}}: Only {{ahead}} patient(s) ahead. Please move towards {{room}}.",
+    "calledTitle": "You Are Being Called!",
+    "calledMsg": "Ticket {{ticketNumber}}: Doctor is ready for you now in {{room}}.",
+    "completedTitle": "Visit Completed",
+    "completedMsg": "Consultation completed for ticket {{ticketNumber}}. Thank you for using Werfa!",
+    "offlineTitle": "Offline Request Saved",
+    "offlineMsg": "Network unavailable. Ticket request stored locally. It will automatically submit once internet is detected.",
+    "syncTitle": "Synchronization Complete",
+    "syncMsg": "Your offline queue request has been confirmed with the clinic server!"
+  },
+  "pitch": {
+    "dockTitle": "PITCH DEMO CONTROLLER",
+    "dockSubtitle": "Jimma University Innovation Pitch Guided Walkthrough",
+    "stepOf": "Step {{current}} of {{total}}",
+    "nextStep": "Next Pitch Step",
+    "prevStep": "Previous Step",
+    "close": "Close Guide",
+    "speakerNotesTitle": "Speaker Talking Points for Jury:",
+    "steps": [
+      {
+        "title": "1. Patient Onboarding & Problem",
+        "description": "Start in the mobile patient app. Highlight the severe Ethiopian hospital waiting challenge and our welcoming trilingual design."
+      },
+      {
+        "title": "2. Afaan Oromoo Voice Registration",
+        "description": "Switch the interface to Afaan Oromoo. Demonstrate how a rural or non-literate patient speaks their name and symptom to join without typing."
+      },
+      {
+        "title": "3. Transparent Live Ticket",
+        "description": "Show the generated ticket with QR, queue position (#2), and realistic estimated wait time. Explain how families wait safely without hallway crowding."
+      },
+      {
+        "title": "4. Clinic Staff Console",
+        "description": "Switch to the Clinic Dashboard. Point out the strictly clinical triage priorities (Emergency, Urgent, Normal) and strict FIFO fairness."
+      },
+      {
+        "title": "5. Live Queue Calling Action",
+        "description": "Call the next patient in the OPD queue. Show how the doctor has full control with confirmation safeguards."
+      },
+      {
+        "title": "6. Real-Time Patient Status Sync",
+        "description": "Return to the patient screen to show the live status changing to 'Called' with clear room directions and audio alert."
+      },
+      {
+        "title": "7. Simulate Offline Outage",
+        "description": "Click 'Simulate Offline' to demonstrate network resilience. Show the clear offline banner and local storage indicator."
+      },
+      {
+        "title": "8. Offline Queue Registration",
+        "description": "Create a new patient request while completely disconnected. Notice it is stored locally with 'Pending Sync' safety."
+      },
+      {
+        "title": "9. Internet Recovery & Auto-Sync",
+        "description": "Click 'Restore Internet'. Watch IndexedDB automatically synchronize with the clinic server without losing any patient."
+      },
+      {
+        "title": "10. Analytics & Commercial Potential",
+        "description": "Show the hospital flow analytics, wait time reduction metrics, and the scalable SaaS/public health partnership model for Jimma and beyond."
+      }
+    ]
+  }
+}
