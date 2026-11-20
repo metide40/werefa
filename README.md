@@ -90,3 +90,47 @@ public/            # Static assets and web app manifest
 ## Contributing / development
 
 Werfa is under active development. Changes should be tested locally before being treated as working product features. Please distinguish prototype behavior from real integrations in documentation and demos.
+
+## Remaining MVP features (updated)
+
+### Emergency alerts (clinic)
+- Red highlight for EMERGENCY tickets on Live Queue
+- Gentle Web Audio alert on new REPORTED emergency (once per case id)
+- Mute/unmute persisted in `localStorage` (`werfa_mute_emergency`)
+- Acknowledge action on alert panel
+
+### ETA & patient notices
+- ETA includes emergency interruption buffer when active (`EMERGENCY_ETA_BUFFER_MINUTES`, default 20)
+- Public ticket position payload includes `queueInterrupted` + safe message (no third-party clinical details)
+- Patient ticket view shows estimate disclaimer and emergency delay notice
+- Patient client polls `/api/queues/tickets/{id}/position/`
+
+### Offline triage
+- IndexedDB store: `src/lib/offlineTriage.ts`
+- Pending assessments use `client_request_id` idempotency keys
+- Clear offline vs server-confirmed messaging; never claims remote patient notification while offline
+
+### Admin emergency analytics
+- `/api/admin/emergencies/` returns totals, by clinic, by department, priority audit, review indicators
+- Admin UI filters by status
+
+### Demo credentials
+```
+admin / werfa-admin-demo
+clinic_staff / werfa-staff-demo
+clinic_staff_shenen / werfa-staff-shenen
+triage_nurse / werfa-triage-demo
+patient / werfa-patient-demo
+```
+
+### Start
+```bash
+cd backend
+export DJANGO_DB_PATH=/tmp/werfa_db.sqlite3
+python manage.py migrate
+python manage.py seed_demo
+python manage.py runserver 0.0.0.0:8000
+
+# frontend
+npm install && npm run dev
+```

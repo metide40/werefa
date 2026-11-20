@@ -16,6 +16,7 @@ from .services import (
     call_next_patient,
     generate_ticket_number,
     compute_position,
+    eta_context,
     compute_eta_minutes,
     staff_clinic_or_403,
 )
@@ -37,6 +38,7 @@ def _ticket_owner(request, ticket) -> bool:
 def _public_ticket_payload(ticket):
     """Minimum public fields for position tracking — no name/phone."""
     status_val = 'CALLED' if ticket.status == QueueTicket.Status.SERVING else ticket.status
+    ctx = eta_context(ticket)
     return {
         'id': ticket.id,
         'ticketNumber': ticket.ticket_number,
@@ -50,8 +52,12 @@ def _public_ticket_payload(ticket):
         'peopleAhead': max(0, compute_position(ticket) - 1) if ticket.status == QueueTicket.Status.WAITING else 0,
         'estimatedWaitMins': compute_eta_minutes(ticket),
         'joinedAt': ticket.created_at,
+        'queueInterrupted': ctx.get('queueInterrupted', False),
+        'interruptionMessage': ctx.get('message'),
+        'etaIsEstimateOnly': True,
         'note': 'ETA is an estimate, not a guarantee. Personal details are not exposed on public endpoints.',
     }
+
 
 
 @api_view(['POST'])

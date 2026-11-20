@@ -245,16 +245,80 @@ def emergency_status_view(request, pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsPlatformAdmin])
 def admin_emergencies(request):
+    from django.db.models import Count
+    from queues.models import ActivityEvent
+
     qs = EmergencyCase.objects.select_related('patient', 'clinic', 'department')
     clinic_id = request.query_params.get('clinic_id')
+    status_f = request.query_params.get('status')
+    date_from = request.query_params.get('from')
+    date_to = request.query_params.get('to')
     if clinic_id:
         qs = qs.filter(clinic_id=clinic_id)
+    if status_f:
+        qs = qs.filter(status=status_f.upper())
+    if date_from:
+        qs = qs.filter(activated_at__date__gte=date_from)
+    if date_to:
+        qs = qs.filter(activated_at__date__lte=date_to)
+
     active = qs.exclude(status__in=[EmergencyCase.Status.COMPLETED, EmergencyCase.Status.TRANSFERRED]).count()
     total = qs.count()
     completed = qs.filter(status=EmergencyCase.Status.COMPLETED).count()
+
+    by_clinic = list(
+        qs.values('clinic_id', 'clinic__name').annotate(count=Count('id')).order_by('-count')
+    )
+    by_department = list(
+        qs.values('department_id', 'department__name').annotate(count=Count('id')).order_by('-count')
+    )
+
+    # Priority change audit (human review indicators only)
+    priority_events = ActivityEvent.objects.filter(event_type=ActivityEvent.EventType.PRIORITY)
+    if clinic_id:
+        priority_events = priority_events.filter(clinic_id=clinic_id)
+    priority_events = priority_events.select_related('actor', 'clinic').order_by('-created_at')[:50]
+    audit = [
+        {
+            'id': e.id,
+            'message': e.message,
+            'actor': e.actor.get_full_name() if e.actor_id else None,
+            'clinic': e.clinic.name if e.clinic_id else None,
+            'created_at': e.created_at,
+            'metadata': e.metadata,
+        }
+        for e in priority_events
+    ]
+
+    # Unusual: same actor with many priority changes in 24h (indicator only)
+    from django.utils import timezone
+    from datetime import timedelta
+    since = timezone.now() - timedelta(hours=24)
+    recent = (
+        ActivityEvent.objects.filter(event_type=ActivityEvent.EventType.PRIORITY, created_at__gte=since)
+        .values('actor_id', 'actor__username')
+        .annotate(count=Count('id'))
+        .filter(count__gte=5)
+        .order_by('-count')
+    )
+    review_indicators = [
+        {
+            'type': 'high_priority_change_volume',
+            'actor_id': r['actor_id'],
+            'actor': r['actor__username'],
+            'count_24h': r['count'],
+            'note': 'Review indicator only — not an automatic accusation.',
+        }
+        for r in recent
+    ]
+
     return Response({
         'total': total,
         'active': active,
         'completed': completed,
+        'by_clinic': by_clinic,
+        'by_department': by_department,
+        'audit_priority_changes': audit,
+        'review_indicators': review_indicators,
         'results': EmergencyCaseSerializer(qs.order_by('-activated_at')[:100], many=True).data,
     })

@@ -1,6 +1,7 @@
 """Queue ordering, position, ETA, and staff clinic scoping."""
 from django.conf import settings
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -40,8 +41,28 @@ def compute_position(ticket):
     return 0
 
 
+def active_emergency_interruption(clinic, department=None):
+    """Return active emergency interruption for clinic (optional department)."""
+    try:
+        from triage.models import QueueInterruption, EmergencyCase
+    except Exception:
+        return None
+    qs = QueueInterruption.objects.filter(
+        clinic=clinic,
+        ended_at__isnull=True,
+        status=QueueInterruption.Status.EMERGENCY_INTERRUPTION,
+    ).select_related('emergency_case')
+    if department is not None:
+        qs = qs.filter(department_id__in=[department.id, None])
+    return qs.order_by('-started_at').first()
+
+
 def compute_eta_minutes(ticket):
-    """Estimate based on people ahead × average consultation minutes."""
+    """
+    Estimate based on people ahead × average consultation minutes.
+    When an active emergency interruption exists, add a clinic-configurable buffer
+    (default 20 minutes). Never presented as a guarantee.
+    """
     pos = compute_position(ticket)
     if pos <= 0:
         return 0
@@ -49,20 +70,47 @@ def compute_eta_minutes(ticket):
     if ticket.department and ticket.department.avg_wait_mins:
         avg = ticket.department.avg_wait_mins
     people_ahead = max(0, pos - 1)
-    return people_ahead * avg
+    base = people_ahead * avg
+
+    interruption = active_emergency_interruption(ticket.clinic, ticket.department)
+    emergency_buffer = 0
+    if interruption and ticket.priority != QueueTicket.Priority.EMERGENCY:
+        emergency_buffer = int(getattr(settings, 'EMERGENCY_ETA_BUFFER_MINUTES', 20))
+    return base + emergency_buffer
+
+
+def eta_context(ticket):
+    """Extra patient-safe messaging around ETA changes due to emergencies."""
+    interruption = active_emergency_interruption(ticket.clinic, ticket.department)
+    if interruption and ticket.status == QueueTicket.Status.WAITING and ticket.priority != QueueTicket.Priority.EMERGENCY:
+        return {
+            'queueInterrupted': True,
+            'interruptionReason': 'emergency_priority',
+            'messageKey': 'patient.ticket.emergencyDelayNotice',
+            'message': (
+                'An emergency case is currently receiving priority attention. '
+                'Your estimated waiting time has been updated. Thank you for your understanding.'
+            ),
+            'etaIsEstimateOnly': True,
+        }
+    return {
+        'queueInterrupted': False,
+        'interruptionReason': None,
+        'messageKey': None,
+        'message': None,
+        'etaIsEstimateOnly': True,
+    }
 
 
 def generate_ticket_number(clinic, department):
     prefix = (clinic.name[:4] if clinic.name else 'WRF').upper().replace(' ', '')
     code = department.code or 'GEN'
-    # Retry-safe unique number
     count = QueueTicket.objects.filter(clinic=clinic, department=department).count() + 1
     for _ in range(20):
         candidate = f'{prefix}-{code}-{count:03d}'
         if not QueueTicket.objects.filter(ticket_number=candidate).exists():
             return candidate
         count += 1
-    # Extremely unlikely fallback
     import uuid
     return f'{prefix}-{code}-{uuid.uuid4().hex[:6].upper()}'
 
@@ -106,10 +154,7 @@ def staff_clinic_or_403(request):
 
 @transaction.atomic
 def call_next_patient(clinic, department=None):
-    """
-    Call the next eligible waiting patient for the clinic (and optional department).
-    Only one transition WAITING -> SERVING per call; uses row locking.
-    """
+    """Call next eligible waiting patient (priority then FIFO)."""
     waiting = ordered_waiting(clinic=clinic, department=department)
     if not waiting:
         return None

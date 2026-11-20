@@ -159,7 +159,9 @@
       "stepAlmost": "Dabareen Dhiyaateera",
       "stepCalled": "Gara Kutaa Yaalaatti Galaa",
       "pendingSync": "Wal-qunnamtii eeggataa jira",
-      "trySync": "Amma wal-qunnamsiisi"
+      "trySync": "Amma wal-qunnamsiisi",
+      "etaDisclaimer": "Tilmaama qofa — yeroo eeggannoo mirkanaa'e miti.",
+      "emergencyDelayNotice": "Dhimmi balaa amma dursina argachaa jira. Yeroon eeggannoo keessan haaromfameera. Galatoomaa."
     },
     "simulationControls": {
       "title": "To'annoo Agarsiisaa (Pitch Demo)",
@@ -328,10 +330,36 @@
   },
   "login": {
     "title": "Seensa hojjettootaa",
-    "subtitle": "Hojjettoota kilinikaa fi bulchitoota",
+    "subtitle": "Kilinika, tiraajii fi bulchitoota waltajjii",
     "username": "Maqaa fayyadamaa",
     "password": "Jecha iccitii",
     "signIn": "Seeni",
     "signingIn": "Seenaa jira…"
+  },
+  "triage": {
+    "nav": "Tiraajii",
+    "overview": "Ilaalcha waliigalaa tiraajii",
+    "pending": "Tiraajii eeggachaa jiran",
+    "assess": "Madaallii dhukkubsataa",
+    "emergencies": "Dhimmoota balaa",
+    "history": "Seenaa tiraajii",
+    "settings": "Hojii qindaa'ina",
+    "submitAssessment": "Madaallii galchi",
+    "confirmPriority": "Dursina madaallii kilinikaa irratti hundaa'uun mirkaneessa (filannoo ofii dhukkubsataa miti).",
+    "priority": "Dursina",
+    "emergency": "Balaa",
+    "urgent": "Ariifachiisaa",
+    "normal": "Idilee",
+    "presentingComplaint": "Komii dhiyeessaa",
+    "notes": "Yaadannoo",
+    "offlinePending": "Bakka buuteen kuufame (wal-qunnamtii eeggachaa). Kunuunsa balaa interneetii hin eegu.",
+    "serverSaved": "Madaalliin sarvarii irratti kuufame.",
+    "emergencyActivated": "Balaan ka'e",
+    "noActiveEmergencies": "Balaan socho'aa hin jiru",
+    "acknowledge": "Fudhadhu",
+    "markCompleted": "Xumurame jedhi",
+    "clinicLabel": "Kilinika",
+    "alertsMuted": "Akeekkachiisni cufame",
+    "alertsOn": "Akeekkachiisni banaa"
   }
 }

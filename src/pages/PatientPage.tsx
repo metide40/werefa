@@ -546,6 +546,12 @@ function PatientPage() {
                 </div>
                 <p className="mt-1 text-2xl font-bold text-brand-green">
                   ~{Math.round(myTicket.estimatedWaitMins)} min
+                  <span className="mt-1 block text-[10px] font-normal text-[var(--text-muted)]">{t('patient.ticket.etaDisclaimer')}</span>
+                  {(myTicket as any).queueInterrupted && (
+                    <div className="mt-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-left text-xs text-amber-900 dark:bg-amber-950/30 dark:text-amber-100">
+                      {(myTicket as any).interruptionMessage || t('patient.ticket.emergencyDelayNotice')}
+                    </div>
+                  )}
                 </p>
               </div>
             </div>

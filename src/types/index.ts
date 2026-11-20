@@ -56,6 +56,8 @@ export interface QueueTicket {
   calledAt?: string;
   completedAt?: string;
   estimatedWaitMins: number;
+  queueInterrupted?: boolean;
+  interruptionMessage?: string | null;
   notes?: string;
   isOfflineCreated?: boolean;
   syncState: SyncState;

@@ -235,9 +235,14 @@ export async function acknowledgeEmergency(id: number | string) {
 export async function updateEmergencyStatus(id: number | string, status: string) {
   return api.post<any>(`/triage/emergencies/${id}/status/`, { status });
 }
-export async function fetchAdminEmergencies(params?: { clinic_id?: string }) {
+export async function fetchAdminEmergencies(params?: { clinic_id?: string; status?: string }) {
   const q = new URLSearchParams();
   if (params?.clinic_id) q.set('clinic_id', params.clinic_id);
+  if (params?.status) q.set('status', params.status);
   const qs = q.toString();
   return api.get<any>(`/admin/emergencies/${qs ? `?${qs}` : ''}`);
+}
+
+export async function fetchTicketPosition(id: number | string) {
+  return api.get<any>(`/queues/tickets/${id}/position/`);
 }

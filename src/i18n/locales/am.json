@@ -159,7 +159,9 @@
       "stepAlmost": "ተራዎ ሊደርስ ነው",
       "stepCalled": "ወደ ህክምና ክፍሉ ይግቡ",
       "pendingSync": "በመመሳሰል ላይ",
-      "trySync": "አሁን አስማማ"
+      "trySync": "አሁን አስማማ",
+      "etaDisclaimer": "ግምት ብቻ — የተረጋገጠ የመጠበቂያ ጊዜ አይደለም።",
+      "emergencyDelayNotice": "አንድ ድንገተኛ ጉዳይ አሁን ቅድሚያ እየተሰጠው ነው። የመጠበቂያ ጊዜዎ ተዘምኗል። ስለ መረዳትዎ እናመሰግናለን።"
     },
     "simulationControls": {
       "title": "የማሳያ መቆጣጠሪያ",
@@ -328,10 +330,36 @@
   },
   "login": {
     "title": "የሰራተኛ መግቢያ",
-    "subtitle": "የክሊኒክ ሰራተኞች እና አስተዳዳሪዎች",
+    "subtitle": "ክሊኒክ፣ ቅድመ ምርመራ እና የመድረክ አስተዳዳሪዎች",
     "username": "የተጠቃሚ ስም",
     "password": "የይለፍ ቃል",
     "signIn": "ግባ",
     "signingIn": "በመግባት ላይ…"
+  },
+  "triage": {
+    "nav": "ቅድመ ምርመራ",
+    "overview": "የቅድመ ምርመራ አጠቃላይ እይታ",
+    "pending": "ቅድመ ምርመራ የሚጠብቁ",
+    "assess": "የታካሚ ግምገማ",
+    "emergencies": "የድንገተኛ ጉዳዮች",
+    "history": "የቅድመ ምርመራ ታሪክ",
+    "settings": "ቅንብሮች",
+    "submitAssessment": "ግምገማ አስገባ",
+    "confirmPriority": "ቅድሚያውን በክሊኒካዊ ግምገማ ላይ በመመስረት አረጋግጣለሁ (በታካሚ ራስ ምርጫ አይደለም)።",
+    "priority": "ቅድሚያ",
+    "emergency": "ድንገተኛ",
+    "urgent": "አስቸኳይ",
+    "normal": "መደበኛ",
+    "presentingComplaint": "የመጀመሪያ ቅሬታ",
+    "notes": "ማስታወሻዎች",
+    "offlinePending": "በአካባቢ ተቀምጧል (ማስመረቅ በመጠባበቅ ላይ)። የድንገተኛ እንክብካቤ በይነመረብን አይጠብቅም።",
+    "serverSaved": "ግምገማው በአገልጋይ ተቀምጧል።",
+    "emergencyActivated": "ድንገተኛ ተነስቷል",
+    "noActiveEmergencies": "ንቁ ድንገተኛ የለም",
+    "acknowledge": "ተቀበል",
+    "markCompleted": "እንደተጠናቀቀ ምልክት አድርግ",
+    "clinicLabel": "ክሊኒክ",
+    "alertsMuted": "ማስጠንቀቂያ ተዘግቷል",
+    "alertsOn": "ማስጠንቀቂያ ክፍት"
   }
 }

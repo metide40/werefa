@@ -16,6 +16,7 @@ import {
   noShowTicket as apiNoShow,
   getToken,
   login,
+  fetchTicketPosition,
 } from '../api/client';
 
 interface AppContextProps {
@@ -80,6 +81,8 @@ function mapApiTicket(r: any): QueueTicket {
     notes: r.notes,
     syncState: 'synced',
     position: r.position ?? 0,
+    queueInterrupted: r.queueInterrupted ?? false,
+    interruptionMessage: r.interruptionMessage ?? null,
     peopleAhead: r.peopleAhead ?? 0,
   };
 }
@@ -366,25 +369,38 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     [updateTicket]
   );
 
-  // Poll clinic queue when API available (for patient view updates)
+  // Poll public ticket position for patient view (ETA + emergency delay notices)
   useEffect(() => {
     if (connectionState === 'OFFLINE') return;
     let cancelled = false;
     async function poll() {
       try {
-        if (!getToken()) return;
-        const queue = await fetchClinicQueue({ status: 'WAITING,SERVING,COMPLETED' });
-        if (cancelled) return;
-        setApiAvailable(true);
-        for (const r of queue) {
-          const mapped = mapApiTicket(r);
-          setTickets((prev) => {
-            const idx = prev.findIndex((t) => t.id === mapped.id);
-            if (idx === -1) return [...prev, mapped];
-            const next = [...prev];
-            next[idx] = { ...next[idx], ...mapped };
-            return next;
-          });
+        const current = JSON.parse(localStorage.getItem('werfa_tickets') || '[]') as { id: string; syncState?: string }[];
+        const ids = current.filter((t) => t.syncState !== 'pending').map((t) => t.id);
+        if (!ids.length) return;
+        for (const id of ids.slice(0, 5)) {
+          try {
+            const r = await fetchTicketPosition(id);
+            if (cancelled) return;
+            setApiAvailable(true);
+            setTickets((prev) => {
+              const idx = prev.findIndex((t) => t.id === String(r.id));
+              if (idx === -1) return prev;
+              const next = [...prev];
+              next[idx] = {
+                ...next[idx],
+                status: r.status === 'SERVING' ? 'CALLED' : r.status,
+                position: r.position ?? next[idx].position,
+                peopleAhead: r.peopleAhead ?? next[idx].peopleAhead,
+                estimatedWaitMins: r.estimatedWaitMins ?? next[idx].estimatedWaitMins,
+                queueInterrupted: r.queueInterrupted ?? false,
+                interruptionMessage: r.interruptionMessage ?? null,
+              };
+              return next;
+            });
+          } catch {
+            /* ignore single ticket failures */
+          }
         }
       } catch {
         /* keep local state */

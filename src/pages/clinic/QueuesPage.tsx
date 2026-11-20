@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Phone, CheckCircle2, UserX } from 'lucide-react';
+import { Phone, CheckCircle2, UserX, Volume2, VolumeX } from 'lucide-react';
 import {
   fetchClinicQueue,
   callNext as apiCallNext,
@@ -16,7 +16,25 @@ export default function ClinicQueuesPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [emergencies, setEmergencies] = useState<any[]>([]);
+  const [mutedAlerts, setMutedAlerts] = useState(() => localStorage.getItem('werfa_mute_emergency') === '1');
+  const seenEmergencyIds = useRef<Set<number>>(new Set());
   const mounted = useRef(true);
+
+  const playGentleAlert = () => {
+    if (mutedAlerts) return;
+    try {
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 520;
+      gain.gain.value = 0.04;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      setTimeout(() => { osc.stop(); ctx.close(); }, 350);
+    } catch { /* browser may block autoplay */ }
+  };
 
   const load = async () => {
     try {
@@ -31,7 +49,15 @@ export default function ClinicQueuesPage() {
         list = list.filter((t: any) => String(t.ticketNumber || '').toLowerCase().includes(s));
       }
       setQueue(list);
-      setEmergencies(em || []);
+      const list = em || [];
+      // Play once per new emergency id
+      for (const item of list) {
+        if (item?.id && !seenEmergencyIds.current.has(item.id)) {
+          seenEmergencyIds.current.add(item.id);
+          if (item.status === 'REPORTED') playGentleAlert();
+        }
+      }
+      setEmergencies(list);
       setError(null);
     } catch (e: any) {
       if (mounted.current) setError(e?.message || 'Failed to load queue');
@@ -94,6 +120,19 @@ export default function ClinicQueuesPage() {
           <h2 className="text-lg font-bold" style={{ color: 'var(--text)' }}>Live Queue</h2>
           <p className="text-xs text-[var(--text-muted)]">Assigned clinic only</p>
         </div>
+        <button
+          type="button"
+          className="btn-ghost text-xs"
+          onClick={() => {
+            const next = !mutedAlerts;
+            setMutedAlerts(next);
+            localStorage.setItem('werfa_mute_emergency', next ? '1' : '0');
+          }}
+          title={mutedAlerts ? 'Unmute emergency alerts' : 'Mute emergency alerts'}
+        >
+          {mutedAlerts ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          {mutedAlerts ? 'Alerts muted' : 'Alerts on'}
+        </button>
         <button type="button" className="btn-primary text-sm" disabled={busy === 'call' || waiting.length === 0} onClick={onCallNext}>
           <Phone className="h-4 w-4" /> Call next
         </button>
@@ -179,11 +218,15 @@ export default function ClinicQueuesPage() {
               <tr><td colSpan={5} className="px-4 py-8 text-center text-[var(--text-muted)]">No patients in this view</td></tr>
             ) : (
               queue.map((tk) => (
-                <tr key={tk.id} className="border-b" style={{ borderColor: 'var(--border)' }}>
+                <tr
+                  key={tk.id}
+                  className={`border-b ${tk.priority === 'EMERGENCY' ? 'bg-red-50 dark:bg-red-950/20' : tk.priority === 'URGENT' ? 'bg-orange-50/80 dark:bg-orange-950/10' : ''}`}
+                  style={{ borderColor: 'var(--border)' }}
+                >
                   <td className="px-4 py-2 font-medium">{tk.ticketNumber}</td>
                   <td className="px-3 py-2">{tk.patientName}</td>
                   <td className="px-3 py-2 text-[var(--text-muted)]">{tk.departmentName}</td>
-                  <td className="px-3 py-2">{tk.priority}</td>
+                  <td className={`px-3 py-2 font-semibold ${tk.priority === 'EMERGENCY' ? 'text-red-700' : tk.priority === 'URGENT' ? 'text-orange-700' : ''}`}>{tk.priority}</td>
                   <td className="px-3 py-2">{tk.status}</td>
                 </tr>
               ))

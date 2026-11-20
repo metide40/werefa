@@ -159,7 +159,9 @@
       "stepAlmost": "Almost Your Turn",
       "stepCalled": "Please Proceed to Room",
       "pendingSync": "Pending synchronization",
-      "trySync": "Try synchronize now"
+      "trySync": "Try synchronize now",
+      "etaDisclaimer": "Estimated only — not a guaranteed wait time.",
+      "emergencyDelayNotice": "An emergency case is currently receiving priority attention. Your estimated waiting time has been updated. Thank you for your understanding."
     },
     "simulationControls": {
       "title": "Pitch Demo Controls",
@@ -328,10 +330,36 @@
   },
   "login": {
     "title": "Staff sign in",
-    "subtitle": "Clinic staff and platform administrators",
+    "subtitle": "Clinic, triage, and platform administrators",
     "username": "Username",
     "password": "Password",
     "signIn": "Sign in",
     "signingIn": "Signing in…"
+  },
+  "triage": {
+    "nav": "Triage",
+    "overview": "Triage overview",
+    "pending": "Waiting for triage",
+    "assess": "Patient assessment",
+    "emergencies": "Emergency cases",
+    "history": "Triage history",
+    "settings": "Triage settings",
+    "submitAssessment": "Submit assessment",
+    "confirmPriority": "I confirm priority based on clinical assessment (not patient self-selection).",
+    "priority": "Priority",
+    "emergency": "Emergency",
+    "urgent": "Urgent",
+    "normal": "Normal",
+    "presentingComplaint": "Presenting complaint",
+    "notes": "Notes",
+    "offlinePending": "Saved locally (pending sync). Emergency care must not wait for internet.",
+    "serverSaved": "Assessment saved on server.",
+    "emergencyActivated": "Emergency activated",
+    "noActiveEmergencies": "No active emergencies",
+    "acknowledge": "Acknowledge",
+    "markCompleted": "Mark completed",
+    "clinicLabel": "Clinic",
+    "alertsMuted": "Alerts muted",
+    "alertsOn": "Alerts on"
   }
 }

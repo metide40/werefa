@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams, useOutletContext } from 'react-router-dom';
 import type { AuthUser } from '../../api/client';
 import { submitTriageAssessment } from '../../api/client';
+import { savePendingAssessment, listPendingAssessments, syncPendingAssessments } from '../../lib/offlineTriage';
 
 export default function TriageAssessPage() {
   const [params] = useSearchParams();
@@ -30,6 +31,8 @@ export default function TriageAssessPage() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
   const [saving, setSaving] = useState(false);
+  const [offlinePending, setOfflinePending] = useState(0);
+  const [offlineNote, setOfflineNote] = useState<string | null>(null);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -40,6 +43,7 @@ export default function TriageAssessPage() {
       return;
     }
     setSaving(true);
+    setOfflineNote(null);
     try {
       const body: Record<string, unknown> = {
         presenting_complaint: complaint,
@@ -53,12 +57,49 @@ export default function TriageAssessPage() {
       else body.patient_name = patientName;
       if (initial.queue_ticket_id) body.queue_ticket_id = Number(initial.queue_ticket_id);
       if (initial.department_id) body.department_id = Number(initial.department_id);
+
+      if (!navigator.onLine) {
+        const pending = await savePendingAssessment(body);
+        setOfflinePending((await listPendingAssessments()).length);
+        setOfflineNote(
+          'Saved locally (pending sync). Emergency care must not wait for internet. Remote patients are not notified until the server confirms.'
+        );
+        setResult({ offline: true, client_request_id: pending.client_request_id });
+        return;
+      }
+
       const res = await submitTriageAssessment(body);
       setResult(res);
-      if (res?.emergency) {
-        // stay to show emergency confirmation
-      }
+      // Opportunistic sync of any other pending
+      await syncPendingAssessments(submitTriageAssessment).catch(() => {});
+      setOfflinePending((await listPendingAssessments()).length);
     } catch (err: any) {
+      // Network-ish failure → store offline
+      if (!navigator.onLine || String(err?.message || '').toLowerCase().includes('network')) {
+        try {
+          const body: Record<string, unknown> = {
+            presenting_complaint: complaint,
+            assessment_notes: notes,
+            priority,
+            confirm_priority: true,
+            vital_signs: { blood_pressure: bp, heart_rate: hr, temperature: temp },
+            client_request_id: crypto.randomUUID(),
+          };
+          if (initial.patient_id) body.patient_id = Number(initial.patient_id);
+          else body.patient_name = patientName;
+          if (initial.queue_ticket_id) body.queue_ticket_id = Number(initial.queue_ticket_id);
+          if (initial.department_id) body.department_id = Number(initial.department_id);
+          await savePendingAssessment(body);
+          setOfflinePending((await listPendingAssessments()).length);
+          setOfflineNote(
+            'Could not reach server — stored locally as pending synchronization. Do not delay emergency care.'
+          );
+          setResult({ offline: true });
+          return;
+        } catch {
+          /* fall through */
+        }
+      }
       setError(err?.message || 'Assessment failed');
     } finally {
       setSaving(false);
@@ -118,14 +159,25 @@ export default function TriageAssessPage() {
           <span>I confirm priority <strong>{priority}</strong> based on clinical assessment (not patient self-selection).</span>
         </label>
         {error && <p className="text-sm text-red-600">{error}</p>}
-        {result && (
+        {offlineNote && (
+          <div className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+            {offlineNote}
+            {offlinePending > 0 && <p className="mt-1 text-xs">Pending local records: {offlinePending}</p>}
+          </div>
+        )}
+        {result && !result.offline && (
           <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
-            Assessment saved.
+            Assessment saved on server.
             {result.emergency && (
               <p className="mt-1 font-semibold text-red-700">
                 Emergency activated: {result.emergency.case_id}
               </p>
             )}
+          </div>
+        )}
+        {result?.offline && (
+          <div className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+            Local emergency assessment recorded (not server-confirmed yet).
           </div>
         )}
         <div className="flex gap-2">
