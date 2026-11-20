@@ -20,10 +20,14 @@ export default function ClinicQueuesPage() {
   const seenEmergencyIds = useRef<Set<number>>(new Set());
   const mounted = useRef(true);
 
+  const mutedRef = useRef(mutedAlerts);
+  mutedRef.current = mutedAlerts;
+
   const playGentleAlert = () => {
-    if (mutedAlerts) return;
+    if (mutedRef.current) return;
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const ctx = new AC();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
@@ -32,15 +36,20 @@ export default function ClinicQueuesPage() {
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start();
-      setTimeout(() => { osc.stop(); ctx.close(); }, 350);
-    } catch { /* browser may block autoplay */ }
+      window.setTimeout(() => {
+        osc.stop();
+        void ctx.close();
+      }, 350);
+    } catch {
+      /* browser may block autoplay */
+    }
   };
 
   const load = async () => {
     try {
       const [q, em] = await Promise.all([
         fetchClinicQueue({ status }),
-        fetchEmergencies({ active: 'true' }).catch(() => []),
+        fetchEmergencies({ active: 'true' }).catch((): any[] => []),
       ]);
       if (!mounted.current) return;
       let list = q || [];
@@ -49,15 +58,15 @@ export default function ClinicQueuesPage() {
         list = list.filter((t: any) => String(t.ticketNumber || '').toLowerCase().includes(s));
       }
       setQueue(list);
-      const list = em || [];
+      const emergencyList = em || [];
       // Play once per new emergency id
-      for (const item of list) {
+      for (const item of emergencyList) {
         if (item?.id && !seenEmergencyIds.current.has(item.id)) {
           seenEmergencyIds.current.add(item.id);
           if (item.status === 'REPORTED') playGentleAlert();
         }
       }
-      setEmergencies(list);
+      setEmergencies(emergencyList);
       setError(null);
     } catch (e: any) {
       if (mounted.current) setError(e?.message || 'Failed to load queue');

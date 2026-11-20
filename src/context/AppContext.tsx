@@ -10,7 +10,6 @@ import {
 } from '../lib/offlineStore';
 import {
   joinQueue as apiJoinQueue,
-  fetchClinicQueue,
   callNext as apiCallNext,
   completeTicket as apiComplete,
   noShowTicket as apiNoShow,

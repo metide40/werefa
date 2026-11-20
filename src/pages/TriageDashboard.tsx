@@ -9,17 +9,15 @@ import {
   Settings,
   HeartPulse,
 } from 'lucide-react';
-import { fetchMe, getToken, setToken, login, submitTriageAssessment, type AuthUser } from '../api/client';
+import {
+  fetchMe,
+  getToken,
+  setToken,
+  login,
+  submitTriageAssessment,
+  type AuthUser,
+} from '../api/client';
 import { registerTriageOnlineSync, listPendingAssessments } from '../lib/offlineTriage';
-
-const menu = [
-  { to: '/triage/overview', icon: LayoutDashboard, label: t('triage.overview') },
-  { to: '/triage/pending', icon: ClipboardList, label: t('triage.pending') },
-  { to: '/triage/assess', icon: HeartPulse, label: t('triage.assess') },
-  { to: '/triage/emergencies', icon: AlertTriangle, label: t('triage.emergencies') },
-  { to: '/triage/history', icon: History, label: t('triage.history') },
-  { to: '/triage/settings', icon: Settings, label: t('triage.settings') },
-];
 
 export default function TriageDashboard() {
   const { t } = useTranslation();
@@ -28,6 +26,15 @@ export default function TriageDashboard() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+
+  const menu = [
+    { to: '/triage/overview', icon: LayoutDashboard, label: t('triage.overview') },
+    { to: '/triage/pending', icon: ClipboardList, label: t('triage.pending') },
+    { to: '/triage/assess', icon: HeartPulse, label: t('triage.assess') },
+    { to: '/triage/emergencies', icon: AlertTriangle, label: t('triage.emergencies') },
+    { to: '/triage/history', icon: History, label: t('triage.history') },
+    { to: '/triage/settings', icon: Settings, label: t('triage.settings') },
+  ];
 
   const ensureAuth = useCallback(async () => {
     const demoAuto =
@@ -55,7 +62,7 @@ export default function TriageDashboard() {
         const me = await ensureAuth();
         if (cancelled) return;
         if (me.role !== 'TRIAGE_NURSE' && me.role !== 'ADMIN') {
-          setError('Only triage nurses can access this dashboard.');
+          setError(t('triage.errors.notAuthorized'));
           return;
         }
         setUser(me);
@@ -63,33 +70,38 @@ export default function TriageDashboard() {
         if (location.pathname === '/triage' || location.pathname === '/triage/') {
           navigate('/triage/overview', { replace: true });
         }
-      } catch (e: any) {
-        if (!cancelled && e?.message !== 'Redirecting to login') setError(e?.message);
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        if (!cancelled && msg !== 'Redirecting to login') setError(msg);
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [ensureAuth, location.pathname, navigate]);
+  }, [ensureAuth, location.pathname, navigate, t]);
 
   useEffect(() => {
-    listPendingAssessments().catch(() => {});
-    return registerTriageOnlineSync(submitTriageAssessment);
+    void listPendingAssessments();
+    return registerTriageOnlineSync((body) => submitTriageAssessment(body));
   }, []);
 
   if (error) {
-
     return (
       <div className="section-container py-16 text-center">
         <p className="text-red-600">{error}</p>
         <button type="button" className="btn-primary mt-4" onClick={() => navigate('/login?portal=triage')}>
-          Sign in
+          {t('login.signIn')}
         </button>
       </div>
     );
   }
+
   if (!ready) {
-    return <div className="flex min-h-[40vh] items-center justify-center text-sm text-[var(--text-muted)]">{t('triage.loading')}</div>;
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center text-sm text-[var(--text-muted)]">
+        {t('triage.loading')}
+      </div>
+    );
   }
 
   return (
@@ -99,9 +111,11 @@ export default function TriageDashboard() {
         style={{ borderColor: 'var(--border)', backgroundColor: 'var(--surface)' }}
       >
         <div className="border-b px-4 py-4" style={{ borderColor: 'var(--border)' }}>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">{t('triage.nav')}</p>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+            {t('triage.nav')}
+          </p>
           <p className="mt-0.5 truncate text-sm font-semibold" style={{ color: 'var(--text)' }}>
-            {user?.staff_clinic_name || 'Clinic'}
+            {user?.staff_clinic_name || t('triage.clinicLabel')}
           </p>
         </div>
         <nav className="flex-1 space-y-0.5 overflow-y-auto p-2.5">
@@ -111,7 +125,9 @@ export default function TriageDashboard() {
               to={item.to}
               className={({ isActive }) =>
                 `flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
-                  isActive ? 'bg-brand-charcoal text-white shadow-soft' : 'text-[var(--text-muted)] hover:bg-black/5'
+                  isActive
+                    ? 'bg-brand-charcoal text-white shadow-soft'
+                    : 'text-[var(--text-muted)] hover:bg-black/5'
                 }`
               }
             >
@@ -133,7 +149,7 @@ export default function TriageDashboard() {
               navigate('/login?portal=triage');
             }}
           >
-            Sign out
+            {t('triage.signOut')}
           </button>
         </div>
       </aside>
