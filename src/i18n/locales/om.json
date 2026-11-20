@@ -345,14 +345,14 @@
     "history": "Seenaa tiraajii",
     "settings": "Hojii qindaa'ina",
     "submitAssessment": "Madaallii galchi",
-    "confirmPriority": "Dursina madaallii kilinikaa irratti hundaa'uun mirkaneessa (filannoo ofii dhukkubsataa miti).",
+    "confirmPriority": "Dursina madaallii kilinikaa irratti hundaa'uun mirkaneessa.",
     "priority": "Dursina",
     "emergency": "Balaa",
     "urgent": "Ariifachiisaa",
     "normal": "Idilee",
     "presentingComplaint": "Komii dhiyeessaa",
     "notes": "Yaadannoo",
-    "offlinePending": "Bakka buuteen kuufame (wal-qunnamtii eeggachaa). Kunuunsa balaa interneetii hin eegu.",
+    "offlinePending": "Bakka buuteen kuufame (wal-qunnamtii eeggachaa). Kunuunsi balaa interneetii hin eegu.",
     "serverSaved": "Madaalliin sarvarii irratti kuufame.",
     "emergencyActivated": "Balaan ka'e",
     "noActiveEmergencies": "Balaan socho'aa hin jiru",
@@ -360,6 +360,43 @@
     "markCompleted": "Xumurame jedhi",
     "clinicLabel": "Kilinika",
     "alertsMuted": "Akeekkachiisni cufame",
-    "alertsOn": "Akeekkachiisni banaa"
+    "alertsOn": "Akeekkachiisni banaa",
+    "loading": "Fe'aa jira…",
+    "signOut": "Ba'i",
+    "assessHelp": "Dursinni kilinikaa hojjettoota tiraajii hayyamamoo qofaatiin murtaa'a — dhukkubsataan miti.",
+    "clinicUnassigned": "Hin ramadamne",
+    "patientName": "Maqaa dhukkubsataa",
+    "offlineNetworkFallback": "Sarvariin hin argamne — bakka buuteen kuufame. Kunuunsa hin oofuu.",
+    "offlineNoRemoteNotify": "Hanga mirkaneeffannaa sarvariitti dhukkubsatoota fageenyaa hin beeksisamu.",
+    "localRecorded": "Madaalliin naannoo galmaa'e (sarvariin hin mirkaneessine).",
+    "submitting": "Ergaa jira…",
+    "back": "Deebi'i",
+    "pendingLocalTitle": "Madaalliiwwan naannoo eeggachaa jiran",
+    "syncNow": "Amma wal-qunnamsiisi",
+    "stillOffline": "Ammallee offline — wal-qunnamsiisuu hin danda'amu.",
+    "syncSuccess": "Madaallii {{count}} sarvarii wajjin wal-qunnamsiifame.",
+    "syncPartial": "{{synced}} milkaa'e, {{failed}} kufee.",
+    "syncNone": "Madaalliin eeggachaa hin jiru.",
+    "offlinePendingCount": "{{count}} offline eeggachaa",
+    "vitals": {
+      "bp": "BP",
+      "hr": "HR",
+      "temp": "Temp"
+    },
+    "stats": {
+      "awaiting": "Tiraajii eeggachaa",
+      "activeEmergencies": "Balaa socho'aa",
+      "emergencyWaiting": "Balaa eeggachaa",
+      "urgentWaiting": "Ariifachiisaa eeggachaa",
+      "normalWaiting": "Idilee eeggachaa",
+      "assessedToday": "Har'a madaallame"
+    },
+    "errors": {
+      "notAuthorized": "Daashboordiin kun narsii tiraajiif qofa.",
+      "confirmRequired": "Osoo hin galchin dura dursina mirkaneessi.",
+      "complaintRequired": "Komiin dhiyeessaa barbaachisaa dha.",
+      "submitFailed": "Madaalliin hin milkoofne",
+      "loadFailed": "Fe'uun hin milkoofne"
+    }
   }
 }

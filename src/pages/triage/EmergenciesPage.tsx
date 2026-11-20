@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useRef, useState } from 'react';
 import { acknowledgeEmergency, fetchEmergencies, updateEmergencyStatus } from '../../api/client';
 
 export default function TriageEmergenciesPage() {
+  const { t } = useTranslation();
   const [rows, setRows] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
@@ -15,7 +17,7 @@ export default function TriageEmergenciesPage() {
         setError(null);
       }
     } catch (e: any) {
-      if (mounted.current) setError(e?.message || 'Failed to load');
+      if (mounted.current) setError(e?.message || t('triage.errors.loadFailed'));
     }
   };
 
@@ -32,12 +34,11 @@ export default function TriageEmergenciesPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-bold text-red-800">Emergency cases</h2>
-        <p className="text-xs text-[var(--text-muted)]">Active emergencies for your clinic</p>
+        <h2 className="text-lg font-bold text-red-800">{t('triage.emergencies')}</h2>
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
       {rows.length === 0 ? (
-        <p className="text-sm text-[var(--text-muted)]">No active emergencies</p>
+        <p className="text-sm text-[var(--text-muted)]">{t('triage.noActiveEmergencies')}</p>
       ) : (
         <ul className="space-y-3">
           {rows.map((e) => (
@@ -69,7 +70,7 @@ export default function TriageEmergenciesPage() {
                         }
                       }}
                     >
-                      Acknowledge
+                      {t('triage.acknowledge')}
                     </button>
                   )}
                   <button
@@ -88,7 +89,7 @@ export default function TriageEmergenciesPage() {
                       }
                     }}
                   >
-                    Mark completed
+                    {t('triage.markCompleted')}
                   </button>
                 </div>
               </div>

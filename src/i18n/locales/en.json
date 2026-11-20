@@ -360,6 +360,43 @@
     "markCompleted": "Mark completed",
     "clinicLabel": "Clinic",
     "alertsMuted": "Alerts muted",
-    "alertsOn": "Alerts on"
+    "alertsOn": "Alerts on",
+    "loading": "Loading…",
+    "signOut": "Sign out",
+    "assessHelp": "Clinical priority is set by authorized triage staff only — not by patients.",
+    "clinicUnassigned": "Not assigned",
+    "patientName": "Patient name",
+    "offlineNetworkFallback": "Could not reach server — stored locally as pending synchronization. Do not delay emergency care.",
+    "offlineNoRemoteNotify": "Remote patients are not notified until the server confirms synchronization.",
+    "localRecorded": "Local emergency assessment recorded (not server-confirmed yet).",
+    "submitting": "Submitting…",
+    "back": "Back",
+    "pendingLocalTitle": "Pending local assessments",
+    "syncNow": "Sync now",
+    "stillOffline": "Still offline — cannot sync yet.",
+    "syncSuccess": "{{count}} assessment(s) synchronized with the server.",
+    "syncPartial": "Synced {{synced}}, failed {{failed}}. Failed items remain pending.",
+    "syncNone": "No pending assessments to sync.",
+    "offlinePendingCount": "{{count}} pending offline",
+    "vitals": {
+      "bp": "BP",
+      "hr": "HR",
+      "temp": "Temp"
+    },
+    "stats": {
+      "awaiting": "Awaiting triage",
+      "activeEmergencies": "Active emergencies",
+      "emergencyWaiting": "Emergency waiting",
+      "urgentWaiting": "Urgent waiting",
+      "normalWaiting": "Normal waiting",
+      "assessedToday": "Assessed today"
+    },
+    "errors": {
+      "notAuthorized": "Only triage nurses can access this dashboard.",
+      "confirmRequired": "Confirm the selected priority before submitting.",
+      "complaintRequired": "Presenting complaint is required.",
+      "submitFailed": "Assessment failed",
+      "loadFailed": "Failed to load"
+    }
   }
 }

@@ -1,4 +1,5 @@
 import type { FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { changePassword, type AuthUser } from '../../api/client';

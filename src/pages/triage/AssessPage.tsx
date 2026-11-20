@@ -1,11 +1,18 @@
 import type { FormEvent } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams, useOutletContext } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { AuthUser } from '../../api/client';
 import { submitTriageAssessment } from '../../api/client';
-import { savePendingAssessment, listPendingAssessments, syncPendingAssessments } from '../../lib/offlineTriage';
+import {
+  savePendingAssessment,
+  listPendingAssessments,
+  syncPendingAssessments,
+  type PendingAssessment,
+} from '../../lib/offlineTriage';
 
 export default function TriageAssessPage() {
+  const { t } = useTranslation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const ctx = useOutletContext<{ user: AuthUser | null } | null>();
@@ -31,158 +38,186 @@ export default function TriageAssessPage() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
   const [saving, setSaving] = useState(false);
-  const [offlinePending, setOfflinePending] = useState(0);
-  const [offlineNote, setOfflineNote] = useState<string | null>(null);
+  const [pending, setPending] = useState<PendingAssessment[]>([]);
+  const [syncMsg, setSyncMsg] = useState<string | null>(null);
+
+  const refreshPending = async () => {
+    try {
+      setPending(await listPendingAssessments());
+    } catch {
+      /* ignore */
+    }
+  };
+
+  useEffect(() => {
+    refreshPending();
+  }, []);
+
+  const buildBody = (): Record<string, unknown> => {
+    const body: Record<string, unknown> = {
+      presenting_complaint: complaint,
+      assessment_notes: notes,
+      priority,
+      confirm_priority: true,
+      vital_signs: { blood_pressure: bp, heart_rate: hr, temperature: temp },
+      client_request_id: crypto.randomUUID(),
+    };
+    if (initial.patient_id) body.patient_id = Number(initial.patient_id);
+    else body.patient_name = patientName;
+    if (initial.queue_ticket_id) body.queue_ticket_id = Number(initial.queue_ticket_id);
+    if (initial.department_id) body.department_id = Number(initial.department_id);
+    return body;
+  };
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
     setResult(null);
+    setSyncMsg(null);
     if (!confirm) {
-      setError('Confirm the selected priority before submitting.');
+      setError(t('triage.errors.confirmRequired'));
+      return;
+    }
+    if (!complaint.trim()) {
+      setError(t('triage.errors.complaintRequired'));
       return;
     }
     setSaving(true);
-    setOfflineNote(null);
+    const body = buildBody();
     try {
-      const body: Record<string, unknown> = {
-        presenting_complaint: complaint,
-        assessment_notes: notes,
-        priority,
-        confirm_priority: true,
-        vital_signs: { blood_pressure: bp, heart_rate: hr, temperature: temp },
-        client_request_id: crypto.randomUUID(),
-      };
-      if (initial.patient_id) body.patient_id = Number(initial.patient_id);
-      else body.patient_name = patientName;
-      if (initial.queue_ticket_id) body.queue_ticket_id = Number(initial.queue_ticket_id);
-      if (initial.department_id) body.department_id = Number(initial.department_id);
-
       if (!navigator.onLine) {
-        const pending = await savePendingAssessment(body);
-        setOfflinePending((await listPendingAssessments()).length);
-        setOfflineNote(
-          'Saved locally (pending sync). Emergency care must not wait for internet. Remote patients are not notified until the server confirms.'
-        );
-        setResult({ offline: true, client_request_id: pending.client_request_id });
+        await savePendingAssessment(body);
+        await refreshPending();
+        setResult({ offline: true });
+        setSyncMsg(t('triage.offlinePending'));
         return;
       }
-
       const res = await submitTriageAssessment(body);
       setResult(res);
-      // Opportunistic sync of any other pending
-      await syncPendingAssessments(submitTriageAssessment).catch(() => {});
-      setOfflinePending((await listPendingAssessments()).length);
+      await syncPendingAssessments(submitTriageAssessment);
+      await refreshPending();
     } catch (err: any) {
-      // Network-ish failure → store offline
       if (!navigator.onLine || String(err?.message || '').toLowerCase().includes('network')) {
         try {
-          const body: Record<string, unknown> = {
-            presenting_complaint: complaint,
-            assessment_notes: notes,
-            priority,
-            confirm_priority: true,
-            vital_signs: { blood_pressure: bp, heart_rate: hr, temperature: temp },
-            client_request_id: crypto.randomUUID(),
-          };
-          if (initial.patient_id) body.patient_id = Number(initial.patient_id);
-          else body.patient_name = patientName;
-          if (initial.queue_ticket_id) body.queue_ticket_id = Number(initial.queue_ticket_id);
-          if (initial.department_id) body.department_id = Number(initial.department_id);
           await savePendingAssessment(body);
-          setOfflinePending((await listPendingAssessments()).length);
-          setOfflineNote(
-            'Could not reach server — stored locally as pending synchronization. Do not delay emergency care.'
-          );
+          await refreshPending();
           setResult({ offline: true });
+          setSyncMsg(t('triage.offlineNetworkFallback'));
           return;
         } catch {
           /* fall through */
         }
       }
-      setError(err?.message || 'Assessment failed');
+      setError(err?.message || t('triage.errors.submitFailed'));
     } finally {
       setSaving(false);
     }
   };
 
+  const manualSync = async () => {
+    setSyncMsg(null);
+    if (!navigator.onLine) {
+      setSyncMsg(t('triage.stillOffline'));
+      return;
+    }
+    const r = await syncPendingAssessments(submitTriageAssessment);
+    await refreshPending();
+    if (r.synced > 0 && r.failed === 0) setSyncMsg(t('triage.syncSuccess', { count: r.synced }));
+    else if (r.failed > 0) setSyncMsg(t('triage.syncPartial', { synced: r.synced, failed: r.failed }));
+    else setSyncMsg(t('triage.syncNone'));
+  };
+
   return (
     <div className="mx-auto max-w-xl space-y-4">
       <div>
-        <h2 className="text-lg font-bold" style={{ color: 'var(--text)' }}>Patient assessment</h2>
-        <p className="text-xs text-[var(--text-muted)]">
-          Clinical priority is set by authorized triage staff only — not by patients.
-        </p>
+        <h2 className="text-lg font-bold" style={{ color: 'var(--text)' }}>{t('triage.assess')}</h2>
+        <p className="text-xs text-[var(--text-muted)]">{t('triage.assessHelp')}</p>
         <p className="mt-1 text-xs font-medium text-brand-green">
-          Clinic: {nurse?.staff_clinic_name || 'Not assigned — re-seed demo data or ask admin'}
+          {t('triage.clinicLabel')}: {nurse?.staff_clinic_name || t('triage.clinicUnassigned')}
         </p>
       </div>
+
+      {pending.length > 0 && (
+        <div className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          <p className="font-semibold">{t('triage.pendingLocalTitle')}</p>
+          <ul className="mt-1 space-y-1 text-xs">
+            {pending.map((p) => (
+              <li key={p.client_request_id}>
+                {p.status} · {new Date(p.created_at).toLocaleString()}
+                {p.last_error ? ` — ${p.last_error}` : ''}
+              </li>
+            ))}
+          </ul>
+          <button type="button" className="btn-secondary mt-2 text-xs" onClick={manualSync}>
+            {t('triage.syncNow')}
+          </button>
+          <p className="mt-1 text-[11px]">{t('triage.offlineNoRemoteNotify')}</p>
+        </div>
+      )}
+
       <form onSubmit={onSubmit} className="card space-y-3 p-4">
         <div>
-          <label className="mb-1 block text-xs font-semibold uppercase text-[var(--text-muted)]">Patient name</label>
+          <label className="mb-1 block text-xs font-semibold uppercase text-[var(--text-muted)]">{t('triage.patientName')}</label>
           <input className="input-field" required value={patientName} onChange={(e) => setPatientName(e.target.value)} disabled={!!initial.patient_id} />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold uppercase text-[var(--text-muted)]">Presenting complaint</label>
+          <label className="mb-1 block text-xs font-semibold uppercase text-[var(--text-muted)]">{t('triage.presentingComplaint')}</label>
           <textarea className="input-field min-h-[80px]" required value={complaint} onChange={(e) => setComplaint(e.target.value)} />
         </div>
         <div className="grid grid-cols-3 gap-2">
-          <input className="input-field" placeholder="BP" value={bp} onChange={(e) => setBp(e.target.value)} />
-          <input className="input-field" placeholder="HR" value={hr} onChange={(e) => setHr(e.target.value)} />
-          <input className="input-field" placeholder="Temp" value={temp} onChange={(e) => setTemp(e.target.value)} />
+          <input className="input-field" placeholder={t('triage.vitals.bp')} value={bp} onChange={(e) => setBp(e.target.value)} />
+          <input className="input-field" placeholder={t('triage.vitals.hr')} value={hr} onChange={(e) => setHr(e.target.value)} />
+          <input className="input-field" placeholder={t('triage.vitals.temp')} value={temp} onChange={(e) => setTemp(e.target.value)} />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold uppercase text-[var(--text-muted)]">Notes</label>
+          <label className="mb-1 block text-xs font-semibold uppercase text-[var(--text-muted)]">{t('triage.notes')}</label>
           <textarea className="input-field min-h-[60px]" value={notes} onChange={(e) => setNotes(e.target.value)} />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold uppercase text-[var(--text-muted)]">Priority</label>
+          <label className="mb-1 block text-xs font-semibold uppercase text-[var(--text-muted)]">{t('triage.priority')}</label>
           <div className="grid grid-cols-3 gap-2">
             {([
-              ['EMERGENCY', 'Emergency', 'bg-red-600 text-white'],
-              ['URGENT', 'Urgent', 'bg-orange-500 text-white'],
-              ['NORMAL', 'Normal', 'bg-emerald-600 text-white'],
-            ] as const).map(([val, label, cls]) => (
+              ['EMERGENCY', 'triage.emergency', 'bg-red-600 text-white'],
+              ['URGENT', 'triage.urgent', 'bg-orange-500 text-white'],
+              ['NORMAL', 'triage.normal', 'bg-emerald-600 text-white'],
+            ] as const).map(([val, key, cls]) => (
               <button
                 key={val}
                 type="button"
                 onClick={() => { setPriority(val); setConfirm(false); }}
                 className={`rounded-xl px-3 py-2 text-sm font-semibold ${priority === val ? cls : 'bg-brand-ivory text-[var(--text)]'}`}
               >
-                {label}
+                {t(key)}
               </button>
             ))}
           </div>
         </div>
         <label className="flex items-start gap-2 text-sm">
           <input type="checkbox" checked={confirm} onChange={(e) => setConfirm(e.target.checked)} className="mt-1" />
-          <span>I confirm priority <strong>{priority}</strong> based on clinical assessment (not patient self-selection).</span>
+          <span>{t('triage.confirmPriority')} <strong>{priority}</strong></span>
         </label>
         {error && <p className="text-sm text-red-600">{error}</p>}
-        {offlineNote && (
-          <div className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-            {offlineNote}
-            {offlinePending > 0 && <p className="mt-1 text-xs">Pending local records: {offlinePending}</p>}
-          </div>
-        )}
+        {syncMsg && <p className="text-sm text-amber-800">{syncMsg}</p>}
         {result && !result.offline && (
           <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
-            Assessment saved on server.
+            {t('triage.serverSaved')}
             {result.emergency && (
               <p className="mt-1 font-semibold text-red-700">
-                Emergency activated: {result.emergency.case_id}
+                {t('triage.emergencyActivated')}: {result.emergency.case_id}
               </p>
             )}
           </div>
         )}
         {result?.offline && (
           <div className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-            Local emergency assessment recorded (not server-confirmed yet).
+            {t('triage.localRecorded')}
           </div>
         )}
         <div className="flex gap-2">
-          <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Submitting…' : 'Submit assessment'}</button>
-          <button type="button" className="btn-ghost" onClick={() => navigate('/triage/pending')}>Back</button>
+          <button type="submit" className="btn-primary" disabled={saving}>
+            {saving ? t('triage.submitting') : t('triage.submitAssessment')}
+          </button>
+          <button type="button" className="btn-ghost" onClick={() => navigate('/triage/pending')}>{t('triage.back')}</button>
         </div>
       </form>
     </div>

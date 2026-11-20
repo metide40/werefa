@@ -134,3 +134,17 @@ python manage.py runserver 0.0.0.0:8000
 # frontend
 npm install && npm run dev
 ```
+
+## Notifications scope (pitch-ready honesty)
+
+**Implemented now**
+- In-app patient ticket updates via polling public position endpoint
+- Emergency delay notice on patient ticket (no third-party clinical details)
+- Clinic emergency visual + optional gentle audio alert with mute
+
+**Not implemented (future enhancements)**
+- SMS delivery to patient phones
+- Mobile push notifications (FCM/APNs)
+- Paid third-party messaging providers
+
+Do not claim SMS or push delivery in the pitch. Describe them as planned integrations after incubation.

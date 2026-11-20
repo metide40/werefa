@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -8,18 +9,20 @@ import {
   Settings,
   HeartPulse,
 } from 'lucide-react';
-import { fetchMe, getToken, setToken, login, type AuthUser } from '../api/client';
+import { fetchMe, getToken, setToken, login, submitTriageAssessment, type AuthUser } from '../api/client';
+import { registerTriageOnlineSync, listPendingAssessments } from '../lib/offlineTriage';
 
 const menu = [
-  { to: '/triage/overview', icon: LayoutDashboard, label: 'Overview' },
-  { to: '/triage/pending', icon: ClipboardList, label: 'Waiting for triage' },
-  { to: '/triage/assess', icon: HeartPulse, label: 'New assessment' },
-  { to: '/triage/emergencies', icon: AlertTriangle, label: 'Emergency cases' },
-  { to: '/triage/history', icon: History, label: 'Triage history' },
-  { to: '/triage/settings', icon: Settings, label: 'Settings' },
+  { to: '/triage/overview', icon: LayoutDashboard, label: t('triage.overview') },
+  { to: '/triage/pending', icon: ClipboardList, label: t('triage.pending') },
+  { to: '/triage/assess', icon: HeartPulse, label: t('triage.assess') },
+  { to: '/triage/emergencies', icon: AlertTriangle, label: t('triage.emergencies') },
+  { to: '/triage/history', icon: History, label: t('triage.history') },
+  { to: '/triage/settings', icon: Settings, label: t('triage.settings') },
 ];
 
 export default function TriageDashboard() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -69,7 +72,13 @@ export default function TriageDashboard() {
     };
   }, [ensureAuth, location.pathname, navigate]);
 
+  useEffect(() => {
+    listPendingAssessments().catch(() => {});
+    return registerTriageOnlineSync(submitTriageAssessment);
+  }, []);
+
   if (error) {
+
     return (
       <div className="section-container py-16 text-center">
         <p className="text-red-600">{error}</p>
@@ -80,7 +89,7 @@ export default function TriageDashboard() {
     );
   }
   if (!ready) {
-    return <div className="flex min-h-[40vh] items-center justify-center text-sm text-[var(--text-muted)]">Loading triage…</div>;
+    return <div className="flex min-h-[40vh] items-center justify-center text-sm text-[var(--text-muted)]">{t('triage.loading')}</div>;
   }
 
   return (
@@ -90,7 +99,7 @@ export default function TriageDashboard() {
         style={{ borderColor: 'var(--border)', backgroundColor: 'var(--surface)' }}
       >
         <div className="border-b px-4 py-4" style={{ borderColor: 'var(--border)' }}>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">Triage</p>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">{t('triage.nav')}</p>
           <p className="mt-0.5 truncate text-sm font-semibold" style={{ color: 'var(--text)' }}>
             {user?.staff_clinic_name || 'Clinic'}
           </p>

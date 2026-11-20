@@ -345,7 +345,7 @@
     "history": "የቅድመ ምርመራ ታሪክ",
     "settings": "ቅንብሮች",
     "submitAssessment": "ግምገማ አስገባ",
-    "confirmPriority": "ቅድሚያውን በክሊኒካዊ ግምገማ ላይ በመመስረት አረጋግጣለሁ (በታካሚ ራስ ምርጫ አይደለም)።",
+    "confirmPriority": "ቅድሚያውን በክሊኒካዊ ግምገማ ላይ በመመስረት አረጋግጣለሁ።",
     "priority": "ቅድሚያ",
     "emergency": "ድንገተኛ",
     "urgent": "አስቸኳይ",
@@ -360,6 +360,43 @@
     "markCompleted": "እንደተጠናቀቀ ምልክት አድርግ",
     "clinicLabel": "ክሊኒክ",
     "alertsMuted": "ማስጠንቀቂያ ተዘግቷል",
-    "alertsOn": "ማስጠንቀቂያ ክፍት"
+    "alertsOn": "ማስጠንቀቂያ ክፍት",
+    "loading": "በመጫን ላይ…",
+    "signOut": "ውጣ",
+    "assessHelp": "ክሊኒካዊ ቅድሚያ የሚወሰነው በተፈቀደ የቅድመ ምርመራ ሰራተኛ ብቻ ነው — በታካሚ አይደለም።",
+    "clinicUnassigned": "አልተመደበም",
+    "patientName": "የታካሚ ስም",
+    "offlineNetworkFallback": "አገልጋዩ አልተገኘም — በአካባቢ ተቀምጧል። እንክብካቤን አያዘገዩ።",
+    "offlineNoRemoteNotify": "እስከ አገልጋይ ማረጋገጫ ድረስ የርቀት ታካሚዎች አይነገሩም።",
+    "localRecorded": "የአካባቢ ግምገማ ተመዝግቧል (በአገልጋይ አልተረጋገጠም)።",
+    "submitting": "በመላክ ላይ…",
+    "back": "ተመለስ",
+    "pendingLocalTitle": "በመጠባበቅ ላይ ያሉ የአካባቢ ግምገማዎች",
+    "syncNow": "አሁን አስምር",
+    "stillOffline": "ገና ከመስመር ውጭ — ማስመረቅ አይቻልም።",
+    "syncSuccess": "{{count}} ግምገማ(ዎች) ከአገልጋይ ጋር ተስማምተዋል።",
+    "syncPartial": "{{synced}} ተሳክቷል፣ {{failed}} አልተሳካም።",
+    "syncNone": "ለማስመረቅ የሚጠብቅ የለም።",
+    "offlinePendingCount": "{{count}} ከመስመር ውጭ በመጠባበቅ",
+    "vitals": {
+      "bp": "BP",
+      "hr": "HR",
+      "temp": "Temp"
+    },
+    "stats": {
+      "awaiting": "ቅድመ ምርመራ የሚጠብቁ",
+      "activeEmergencies": "ንቁ ድንገተኛ",
+      "emergencyWaiting": "ድንገተኛ በመጠባበቅ",
+      "urgentWaiting": "አስቸኳይ በመጠባበቅ",
+      "normalWaiting": "መደበኛ በመጠባበቅ",
+      "assessedToday": "ዛሬ የተገመገሙ"
+    },
+    "errors": {
+      "notAuthorized": "ይህ ዳሽቦርድ ለቅድመ ምርመራ ነርሶች ብቻ ነው።",
+      "confirmRequired": "ከማስገባትዎ በፊት ቅድሚያውን ያረጋግጡ።",
+      "complaintRequired": "የመጀመሪያ ቅሬታ ያስፈልጋል።",
+      "submitFailed": "ግምገማ አልተሳካም",
+      "loadFailed": "መጫን አልተሳካም"
+    }
   }
 }
