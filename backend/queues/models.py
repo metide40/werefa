@@ -82,3 +82,47 @@ class QueueTicket(models.Model):
         self.status = self.Status.CANCELLED
         self.completed_at = timezone.now()
         self.save(update_fields=['status', 'completed_at'])
+
+
+class ActivityEvent(models.Model):
+    class EventType(models.TextChoices):
+        JOIN = 'JOIN', 'Patient joined queue'
+        CALL = 'CALL', 'Patient called'
+        COMPLETE = 'COMPLETE', 'Consultation completed'
+        NO_SHOW = 'NO_SHOW', 'Patient no-show'
+        CANCEL = 'CANCEL', 'Ticket cancelled'
+        PRIORITY = 'PRIORITY', 'Priority changed'
+        CLINIC_CREATE = 'CLINIC_CREATE', 'Clinic registered'
+        CLINIC_UPDATE = 'CLINIC_UPDATE', 'Clinic updated'
+
+    event_type = models.CharField(max_length=30, choices=EventType.choices, db_index=True)
+    actor = models.ForeignKey(
+        'accounts.User',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='activity_events',
+    )
+    clinic = models.ForeignKey(
+        'clinics.Clinic',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='activity_events',
+    )
+    ticket = models.ForeignKey(
+        'QueueTicket',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='activity_events',
+    )
+    message = models.CharField(max_length=255)
+    metadata = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.event_type} @ {self.created_at}'

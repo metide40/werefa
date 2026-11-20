@@ -32,9 +32,12 @@ class Command(BaseCommand):
                 'is_superuser': True,
             },
         )
-        if not admin_user.has_usable_password():
-            admin_user.set_password('werfa-admin-demo')
-            admin_user.save()
+        admin_user.set_password('werfa-admin-demo')
+        admin_user.role = User.Role.ADMIN
+        admin_user.is_staff = True
+        admin_user.is_superuser = True
+        admin_user.is_active = True
+        admin_user.save()
         Token.objects.get_or_create(user=admin_user)
 
         # Clinics
@@ -115,11 +118,12 @@ class Command(BaseCommand):
                 'is_staff': True,
             },
         )
-        if created or not staff.has_usable_password():
-            staff.set_password('werfa-staff-demo')
-            staff.staff_clinic = jush
-            staff.role = User.Role.CLINIC_STAFF
-            staff.save()
+        staff.set_password('werfa-staff-demo')
+        staff.staff_clinic = jush
+        staff.role = User.Role.CLINIC_STAFF
+        staff.is_staff = True
+        staff.is_active = True
+        staff.save()
         Token.objects.get_or_create(user=staff)
 
         # Patient user
@@ -132,9 +136,10 @@ class Command(BaseCommand):
                 'role': User.Role.PATIENT,
             },
         )
-        if created or not patient_user.has_usable_password():
-            patient_user.set_password('werfa-patient-demo')
-            patient_user.save()
+        patient_user.set_password('werfa-patient-demo')
+        patient_user.role = User.Role.PATIENT
+        patient_user.is_active = True
+        patient_user.save()
         Token.objects.get_or_create(user=patient_user)
 
         patient_profile, _ = Patient.objects.get_or_create(

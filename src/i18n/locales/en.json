@@ -15,7 +15,8 @@
     "admin": "System Admin",
     "pitchMode": "Pitch Presentation Mode",
     "resetDemo": "Reset Demo",
-    "language": "Language"
+    "language": "Language",
+    "signIn": "Sign in"
   },
   "priority": {
     "EMERGENCY": "Emergency",
@@ -126,7 +127,7 @@
     "joinVoice": "Voice Registration (Afaan Oromoo / Amharic / English)",
     "joinForm": "Standard Form Registration",
     "joinQueueBtn": "Join Queue Now",
-    "joining": "Registering in Queue...",
+    "joining": "Joining…",
     "cancelTicket": "Cancel My Ticket",
     "cancelConfirm": "Are you sure you want to cancel your queue ticket?",
     "cancelledSuccess": "Your queue ticket has been cancelled.",
@@ -156,7 +157,9 @@
       "refreshStatus": "Refresh Status",
       "stepWaiting": "In Queue",
       "stepAlmost": "Almost Your Turn",
-      "stepCalled": "Please Proceed to Room"
+      "stepCalled": "Please Proceed to Room",
+      "pendingSync": "Pending synchronization",
+      "trySync": "Try synchronize now"
     },
     "simulationControls": {
       "title": "Pitch Demo Controls",
@@ -251,18 +254,25 @@
     "crowdingReduction": "Reduced Waiting Hall Crowding"
   },
   "notifications": {
-    "joinTitle": "Queue Registered",
+    "joinTitle": "Joined queue",
     "joinMsg": "You have joined the queue at {{clinic}} as {{ticketNumber}}. Estimated wait is {{time}} minutes.",
     "approachingTitle": "Almost Your Turn!",
     "approachingMsg": "Ticket {{ticketNumber}}: Only {{ahead}} patient(s) ahead. Please move towards {{room}}.",
-    "calledTitle": "You Are Being Called!",
+    "calledTitle": "Patient called",
     "calledMsg": "Ticket {{ticketNumber}}: Doctor is ready for you now in {{room}}.",
-    "completedTitle": "Visit Completed",
+    "completedTitle": "Consultation completed",
     "completedMsg": "Consultation completed for ticket {{ticketNumber}}. Thank you for using Werfa!",
     "offlineTitle": "Offline Request Saved",
     "offlineMsg": "Network unavailable. Ticket request stored locally. It will automatically submit once internet is detected.",
     "syncTitle": "Synchronization Complete",
-    "syncMsg": "Your offline queue request has been confirmed with the clinic server!"
+    "syncMsg": "Your offline queue request has been confirmed with the clinic server!",
+    "join": "Ticket {{ticketNumber}} created",
+    "offlinePendingTitle": "Saved offline",
+    "offlinePending": "Your request will sync when you are back online",
+    "syncSuccessTitle": "Synchronized",
+    "syncSuccess": "Ticket {{ticketNumber}} confirmed with the clinic",
+    "called": "{{patientName}} has been called",
+    "completed": "Visit marked complete"
   },
   "pitch": {
     "dockTitle": "PITCH DEMO CONTROLLER",
@@ -313,6 +323,15 @@
         "title": "10. Analytics & Commercial Potential",
         "description": "Show the hospital flow analytics, wait time reduction metrics, and the scalable SaaS/public health partnership model for Jimma and beyond."
       }
-    ]
+    ],
+    "title": "Guided pitch mode"
+  },
+  "login": {
+    "title": "Staff sign in",
+    "subtitle": "Clinic staff and platform administrators",
+    "username": "Username",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…"
   }
 }

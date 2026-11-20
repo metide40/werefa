@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
@@ -15,7 +15,11 @@ import {
   QrCode,
 } from 'lucide-react';
 import { AppContext } from '../context/AppContext';
-import type { QueueTicket } from '../types';
+import type { Clinic, QueueTicket } from '../types';
+import { INITIAL_CLINICS } from '../data/demoData';
+import { fetchClinics } from '../api/client';
+import { getSpeechSupport, startListening } from '../lib/speech';
+import type { PendingJoin } from '../lib/offlineStore';
 
 function PatientPage() {
   const { t, i18n } = useTranslation();
@@ -23,8 +27,21 @@ function PatientPage() {
   if (!context) {
     throw new Error('PatientPage must be rendered within AppProvider');
   }
-  const { clinics, tickets, addTicket } = context;
+  const {
+    clinics: localClinics,
+    tickets,
+    connectionState,
+    joinQueueOnline,
+    joinQueueOffline,
+    pendingJoins,
+    syncPendingJoins,
+    lastApiError,
+  } = context;
 
+  const [apiClinics, setApiClinics] = useState<Clinic[] | null>(null);
+  const [clinicsLoading, setClinicsLoading] = useState(true);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<'clinic' | 'method' | 'form' | 'ticket'>('clinic');
   const [selectedClinicId, setSelectedClinicId] = useState<string>('');
   const [formData, setFormData] = useState({
@@ -34,8 +51,61 @@ function PatientPage() {
     reason: '',
   });
   const [showVoiceDemo, setShowVoiceDemo] = useState(false);
+  const [lastTicket, setLastTicket] = useState<QueueTicket | null>(null);
 
-  const selectedClinic = clinics.find((c) => c.id === selectedClinicId);
+  // Prefer API clinics; fall back to local demo data
+  const clinics =
+    apiClinics && apiClinics.length > 0
+      ? apiClinics
+      : localClinics && localClinics.length > 0
+        ? localClinics
+        : INITIAL_CLINICS;
+  const selectedClinic = clinics.find((c) => String(c.id) === String(selectedClinicId));
+
+  useEffect(() => {
+    let cancelled = false;
+    setClinicsLoading(true);
+    fetchClinics()
+      .then((data) => {
+        if (cancelled) return;
+        // Normalize API shape to frontend Clinic type
+        const mapped: Clinic[] = data.map((c: any) => ({
+          id: String(c.id),
+          name: c.name,
+          nameAm: c.nameAm || c.name_am || '',
+          nameOm: c.nameOm || c.name_om || '',
+          city: c.city,
+          region: c.region,
+          location: c.location || '',
+          phone: c.phone || '',
+          type: c.type || c.clinic_type || 'Primary Hospital',
+          departments: (c.departments || []).map((d: any) => ({
+            id: String(d.id),
+            name: d.name,
+            nameAm: d.name_am || d.nameAm || '',
+            nameOm: d.name_om || d.nameOm || '',
+            code: d.code,
+            roomNumber: d.room_number || d.roomNumber || '',
+            currentServingNumber: d.current_serving_number || null,
+            waitingCount: d.waiting_count ?? 0,
+            avgWaitMins: d.avg_wait_mins ?? 12,
+            iconName: d.icon_name || 'Stethoscope',
+          })),
+          activeDoctors: c.activeDoctors ?? c.active_doctors ?? 0,
+          subscriptionStatus: c.subscriptionStatus || c.subscription_status || 'active',
+          isPartner: c.isPartner ?? c.is_partner ?? true,
+        }));
+        setApiClinics(mapped);
+        setApiError(null);
+      })
+      .catch((err) => {
+        if (!cancelled) setApiError(err.message || 'API unavailable — using local demo data');
+      })
+      .finally(() => {
+        if (!cancelled) setClinicsLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   const getLocalizedName = (item: { name: string; nameAm?: string; nameOm?: string }) => {
     if (i18n.language === 'am' && item.nameAm) return item.nameAm;
@@ -43,43 +113,70 @@ function PatientPage() {
     return item.name;
   };
 
-  const handleJoin = () => {
+  const [pendingLocal, setPendingLocal] = useState<PendingJoin | null>(null);
+  const [listening, setListening] = useState(false);
+  const [speechError, setSpeechError] = useState<string | null>(null);
+  const [speechSimulated, setSpeechSimulated] = useState(false);
+
+  const handleJoin = async () => {
     if (!selectedClinic || !formData.name || !formData.departmentId) return;
-
-    const dept = selectedClinic.departments.find((d) => d.id === formData.departmentId);
-    const waitingInDept = tickets.filter(
-      (tk) =>
-        tk.clinicId === selectedClinicId &&
-        tk.departmentId === formData.departmentId &&
-        tk.status === 'WAITING'
-    ).length;
-
-    const newTicket: QueueTicket = {
-      id: crypto.randomUUID(),
-      ticketNumber: `${selectedClinic.name.slice(0, 4).toUpperCase()}-${dept?.code || 'GEN'}-${String(Date.now() % 1000).padStart(3, '0')}`,
-      patientName: formData.name,
-      phoneNumber: formData.phone,
-      clinicId: selectedClinicId,
+    setLoading(true);
+    setApiError(null);
+    setPendingLocal(null);
+    const dept = selectedClinic.departments.find((d) => String(d.id) === String(formData.departmentId));
+    const payload = {
+      clinicId: String(selectedClinic.id),
       clinicName: selectedClinic.name,
-      departmentId: formData.departmentId,
+      departmentId: String(formData.departmentId),
       departmentName: dept?.name || '',
-      priority: 'NORMAL',
-      status: 'WAITING',
-      joinedAt: new Date().toISOString(),
-      estimatedWaitMins: Math.max(
-        5,
-        ((waitingInDept + 1) * (dept?.avgWaitMins || 15)) / Math.max(1, waitingInDept || 1)
-      ),
-      syncState: 'synced',
-      position: waitingInDept + 1,
-      peopleAhead: waitingInDept,
-      notes: formData.reason || undefined,
+      fullName: formData.name,
+      phoneNumber: formData.phone,
+      notes: formData.reason,
+      preferredLanguage: i18n.language,
     };
-    addTicket(newTicket);
-    setStep('ticket');
+    try {
+      if (connectionState === 'OFFLINE' || !navigator.onLine) {
+        const pending = await joinQueueOffline(payload);
+        setPendingLocal(pending);
+        setStep('ticket');
+      } else {
+        const ticket = await joinQueueOnline(payload);
+        setLastTicket(ticket);
+        setStep('ticket');
+      }
+    } catch (err: any) {
+      setApiError(err?.message || 'Could not join the queue. Please try again.');
+      setLastTicket(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const myTicket = tickets[tickets.length - 1];
+  const startVoice = () => {
+    setSpeechError(null);
+    const support = getSpeechSupport();
+    if (!support.supported) {
+      setSpeechSimulated(true);
+      setSpeechError(support.reason || 'Speech recognition unsupported');
+      setShowVoiceDemo(true);
+      return;
+    }
+    setSpeechSimulated(false);
+    setListening(true);
+    startListening(
+      (i18n.language as 'en' | 'am' | 'om') || 'en',
+      (result) => {
+        // Fill name field with recognized text for patient to confirm
+        setFormData((f) => ({ ...f, name: result.transcript || f.name }));
+      },
+      (msg) => setSpeechError(msg),
+      () => setListening(false)
+    );
+  };
+
+  const myTicket = lastTicket
+    ? tickets.find((t) => t.id === lastTicket.id) || lastTicket
+    : null;
 
   const renderClinicSelection = () => (
     <div className="animate-slide-up space-y-6">
@@ -91,6 +188,14 @@ function PatientPage() {
         <p className="mt-1 text-sm text-brand-muted">{t('patient.welcome')}</p>
       </div>
 
+      {clinicsLoading && clinics.length === 0 && (
+        <p className="text-sm text-brand-muted">Loading clinics…</p>
+      )}
+      {apiError && (
+        <p className="mb-3 rounded-xl border border-brand-amber/40 bg-brand-amber/10 px-3 py-2 text-xs text-brand-forest">
+          {apiError}
+        </p>
+      )}
       <div className="grid gap-4 sm:grid-cols-2">
         {clinics.map((clinic) => (
           <button
@@ -155,7 +260,7 @@ function PatientPage() {
       <div className="space-y-3">
         <button
           type="button"
-          onClick={() => setShowVoiceDemo(true)}
+          onClick={() => { setShowVoiceDemo(true); startVoice(); }}
           className="group w-full rounded-2xl border-2 border-dashed border-brand-amber/50 bg-gradient-to-br from-brand-amber/5 to-brand-amber/10 p-5 text-left transition hover:border-brand-amber hover:shadow-amber"
         >
           <div className="flex items-start gap-4">
@@ -198,16 +303,32 @@ function PatientPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-charcoal/40 p-4 backdrop-blur-sm">
           <div className="card w-full max-w-md animate-scale-in p-6">
             <h3 className="text-lg font-bold text-brand-forest">{t('patient.voice.modalTitle')}</h3>
-            <p className="mt-2 text-sm text-brand-muted">{t('patient.voice.simulatedNotice')}</p>
+            {speechSimulated ? (
+              <p className="mt-2 text-sm text-brand-amber">
+                Simulation mode — speech recognition is not available in this browser.
+              </p>
+            ) : listening ? (
+              <p className="mt-2 text-sm font-medium text-brand-green">Listening… speak now.</p>
+            ) : (
+              <p className="mt-2 text-sm text-brand-muted">{t('patient.voice.simulatedNotice')}</p>
+            )}
+            {speechError && (
+              <p className="mt-2 text-sm text-red-600">{speechError}</p>
+            )}
             <div className="mt-4 rounded-xl bg-brand-ivory p-4 text-sm text-brand-text">
-              <p className="mb-1 text-xs font-medium text-brand-muted">Sample (Afaan Oromoo)</p>
-              <p className="italic">{t('patient.voice.sampleOromo')}</p>
+              <p className="mb-1 text-xs font-medium text-brand-muted">
+                {formData.name ? 'Recognized / entered name' : 'Sample (Afaan Oromoo)'}
+              </p>
+              <p className="italic">{formData.name || t('patient.voice.sampleOromo')}</p>
             </div>
             <div className="mt-6 flex gap-3">
               <button
                 type="button"
                 className="btn-secondary flex-1"
-                onClick={() => setShowVoiceDemo(false)}
+                onClick={() => {
+                  setShowVoiceDemo(false);
+                  setSpeechError(null);
+                }}
               >
                 {t('patient.voice.tryAgain')}
               </button>
@@ -216,12 +337,19 @@ function PatientPage() {
                 className="btn-primary flex-1"
                 onClick={() => {
                   setShowVoiceDemo(false);
-                  setFormData({
-                    name: 'Tolosa Gemeda',
-                    phone: '+251 91 234 5678',
-                    departmentId: selectedClinic?.departments[0]?.id || '',
-                    reason: 'Headache / mataa bowwuu',
-                  });
+                  if (!formData.name) {
+                    setFormData({
+                      name: 'Tolosa Gemeda',
+                      phone: formData.phone || '+251 91 234 5678',
+                      departmentId: formData.departmentId || selectedClinic?.departments[0]?.id || '',
+                      reason: formData.reason || 'Headache / mataa bowwuu',
+                    });
+                  } else if (!formData.departmentId && selectedClinic?.departments[0]) {
+                    setFormData((f) => ({
+                      ...f,
+                      departmentId: selectedClinic.departments[0].id,
+                    }));
+                  }
                   setStep('form');
                 }}
               >
@@ -306,14 +434,19 @@ function PatientPage() {
 
         <p className="text-xs text-brand-muted">{t('patient.priorityNote')}</p>
 
+        {apiError && (
+          <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+            {apiError}
+          </div>
+        )}
         <div className="flex flex-col gap-2 pt-1 sm:flex-row">
           <button
             type="button"
             className="btn-primary flex-1"
             onClick={handleJoin}
-            disabled={!formData.name || !formData.departmentId}
+            disabled={loading || !formData.name || !formData.departmentId}
           >
-            {t('patient.joinQueueBtn')}
+            {loading ? (t('patient.joining') || 'Joining...') : t('patient.joinQueueBtn')}
           </button>
           <button type="button" className="btn-secondary" onClick={() => setStep('clinic')}>
             {t('patient.cancelTicket')}
@@ -324,6 +457,51 @@ function PatientPage() {
   );
 
   const renderTicket = () => {
+    // Offline pending request — not a confirmed server ticket
+    if (pendingLocal && !myTicket) {
+      return (
+        <div className="animate-scale-in mx-auto max-w-md space-y-6">
+          <div className="text-center">
+            <p className="text-sm font-medium text-brand-amber">
+              {t('patient.ticket.pendingSync') || 'Pending synchronization'}
+            </p>
+            <h1 className="mt-1 text-xl font-bold text-brand-forest">
+              Request saved offline
+            </h1>
+            <p className="mt-2 text-sm text-brand-muted">
+              No confirmed ticket number yet. When you are back online, Werfa will submit this
+              request to the clinic and assign a real queue position.
+            </p>
+          </div>
+          <div className="card space-y-3 p-5">
+            <div className="flex justify-between text-sm">
+              <span className="text-brand-muted">Name</span>
+              <span className="font-medium">{pendingLocal.patientName}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-brand-muted">Clinic</span>
+              <span className="font-medium text-right max-w-[60%]">{pendingLocal.clinicName}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-brand-muted">Department</span>
+              <span className="font-medium">{pendingLocal.departmentName}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-brand-muted">Local ID</span>
+              <span className="font-mono text-xs">{pendingLocal.localId.slice(0, 8)}…</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="btn-primary w-full"
+            onClick={() => syncPendingJoins()}
+          >
+            {t('patient.ticket.trySync') || 'Try synchronize now'}
+          </button>
+        </div>
+      );
+    }
+
     if (!myTicket) return null;
 
     return (
@@ -338,7 +516,6 @@ function PatientPage() {
 
         <div className="relative overflow-hidden rounded-3xl border border-brand-border bg-brand-card shadow-elevated">
           <div className="h-1.5 bg-gradient-to-r from-brand-forest via-brand-green to-brand-amber" />
-
           <div className="p-6 sm:p-8">
             <div className="text-center">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-muted">
@@ -348,15 +525,12 @@ function PatientPage() {
                 {myTicket.ticketNumber}
               </p>
             </div>
-
             <div className="mt-4 flex justify-center">
               <span className="status-waiting px-3 py-1 text-xs font-semibold">
                 {t(`status.${myTicket.status}`)}
               </span>
             </div>
-
             <div className="my-6 border-t border-dashed border-brand-border" />
-
             <div className="grid grid-cols-2 gap-4">
               <div className="rounded-xl bg-brand-ivory p-3.5">
                 <div className="flex items-center gap-1.5 text-[11px] font-medium text-brand-muted">
@@ -375,7 +549,6 @@ function PatientPage() {
                 </p>
               </div>
             </div>
-
             <div className="mt-4 space-y-2.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-brand-muted">Clinic</span>
@@ -391,17 +564,7 @@ function PatientPage() {
                 <span className="text-brand-muted">{t('patient.ticket.peopleAhead')}</span>
                 <span className="font-medium text-brand-text">{myTicket.peopleAhead}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-brand-muted">{t('patient.ticket.joinedTime')}</span>
-                <span className="font-medium text-brand-text">
-                  {new Date(myTicket.joinedAt).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </span>
-              </div>
             </div>
-
             <div className="mt-6 flex flex-col items-center rounded-xl border border-dashed border-brand-border bg-brand-ivory/50 py-5">
               <QrCode className="h-16 w-16 text-brand-forest/30" />
               <p className="mt-2 px-4 text-center text-[11px] text-brand-muted">
@@ -410,7 +573,6 @@ function PatientPage() {
             </div>
           </div>
         </div>
-
         <div className="flex flex-col gap-2 sm:flex-row">
           <Link to="/" className="btn-secondary flex-1 text-center">
             {t('nav.home')}
@@ -421,6 +583,8 @@ function PatientPage() {
             onClick={() => {
               setStep('clinic');
               setSelectedClinicId('');
+              setLastTicket(null);
+              setPendingLocal(null);
               setFormData({ name: '', phone: '', departmentId: '', reason: '' });
             }}
           >
@@ -431,8 +595,23 @@ function PatientPage() {
     );
   };
 
+
   return (
     <div className="section-container min-h-[60vh] py-8">
+      {(pendingJoins.length > 0 || lastApiError) && (
+        <div className="mb-4 space-y-2">
+          {pendingJoins.length > 0 && (
+            <p className="rounded-xl border border-brand-amber/40 bg-brand-amber/10 px-3 py-2 text-xs text-brand-forest">
+              {pendingJoins.length} offline request(s) pending synchronization.
+            </p>
+          )}
+          {lastApiError && (
+            <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+              {lastApiError}
+            </p>
+          )}
+        </div>
+      )}
       {step === 'clinic' && renderClinicSelection()}
       {step === 'method' && renderMethod()}
       {step === 'form' && renderForm()}

@@ -10,6 +10,8 @@ from clinics.models import Clinic, Department
 from patients.models import Patient
 from .models import QueueTicket
 from .serializers import QueueTicketSerializer, JoinQueueSerializer, PriorityUpdateSerializer
+from .models import ActivityEvent
+from .activity import log_activity
 from .services import (
     call_next_patient,
     generate_ticket_number,
@@ -112,6 +114,13 @@ def join_queue(request):
             notes=data.get('notes', ''),
         )
 
+    log_activity(
+        event_type=ActivityEvent.EventType.JOIN,
+        message=f'Ticket {ticket.ticket_number} joined {clinic.name}',
+        actor=request.user if request.user.is_authenticated else None,
+        clinic=clinic,
+        ticket=ticket,
+    )
     return Response(QueueTicketSerializer(ticket).data, status=status.HTTP_201_CREATED)
 
 
@@ -245,6 +254,13 @@ def call_next(request):
     ticket = call_next_patient(clinic, department)
     if ticket is None:
         return Response({'detail': 'No waiting patients in queue.'}, status=status.HTTP_404_NOT_FOUND)
+    log_activity(
+        event_type=ActivityEvent.EventType.CALL,
+        message=f'Called {ticket.ticket_number}',
+        actor=request.user,
+        clinic=clinic,
+        ticket=ticket,
+    )
     return Response(QueueTicketSerializer(ticket).data)
 
 
@@ -263,6 +279,13 @@ def complete_ticket(request, pk):
             status=status.HTTP_400_BAD_REQUEST,
         )
     ticket.mark_completed()
+    log_activity(
+        event_type=ActivityEvent.EventType.COMPLETE,
+        message=f'Completed {ticket.ticket_number}',
+        actor=request.user,
+        clinic=clinic,
+        ticket=ticket,
+    )
     return Response(QueueTicketSerializer(ticket).data)
 
 
@@ -278,6 +301,13 @@ def no_show_ticket(request, pk):
     if ticket.status not in (QueueTicket.Status.SERVING, QueueTicket.Status.WAITING):
         return Response({'detail': 'Invalid status for no-show.'}, status=status.HTTP_400_BAD_REQUEST)
     ticket.mark_no_show()
+    log_activity(
+        event_type=ActivityEvent.EventType.NO_SHOW,
+        message=f'No-show {ticket.ticket_number}',
+        actor=request.user,
+        clinic=clinic,
+        ticket=ticket,
+    )
     return Response(QueueTicketSerializer(ticket).data)
 
 

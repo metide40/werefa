@@ -15,7 +15,8 @@
     "admin": "Bulchaa Sirnaa",
     "pitchMode": "Haala Dhiheessa Agarsiisaa",
     "resetDemo": "Agarsiisa Haaresi",
-    "language": "Afaan"
+    "language": "Afaan",
+    "signIn": "Seeni"
   },
   "priority": {
     "EMERGENCY": "Balaa/Ariifachiisaa",
@@ -126,7 +127,7 @@
     "joinVoice": "Galmee Sagaleen (Afaan Oromoo / Amaariffa / Ingiliffa)",
     "joinForm": "Unka Barreeffamaan Galmaa'i",
     "joinQueueBtn": "Tarree Qabadhaa",
-    "joining": "Tarreen Galmaa'aa Jira...",
+    "joining": "Walitti makaa jira…",
     "cancelTicket": "Tikkeettii Koo Haqi",
     "cancelConfirm": "Tikkeettii tarree keessanii haquuf mirkaneeffattuu?",
     "cancelledSuccess": "Tikkeettiin tarree keessanii milkaa'inaan haqameera.",
@@ -156,7 +157,9 @@
       "refreshStatus": "Haala Isaa Haaresi",
       "stepWaiting": "Tarree Keessa Jira",
       "stepAlmost": "Dabareen Dhiyaateera",
-      "stepCalled": "Gara Kutaa Yaalaatti Galaa"
+      "stepCalled": "Gara Kutaa Yaalaatti Galaa",
+      "pendingSync": "Wal-qunnamtii eeggataa jira",
+      "trySync": "Amma wal-qunnamsiisi"
     },
     "simulationControls": {
       "title": "To'annoo Agarsiisaa (Pitch Demo)",
@@ -251,18 +254,25 @@
     "crowdingReduction": "Hir'ina Dhiphina Galmaa"
   },
   "notifications": {
-    "joinTitle": "Tarreen Galmaa'eera",
+    "joinTitle": "Tarree seente",
     "joinMsg": "{{clinic}} irratti lakkoofsi tikkeettii {{ticketNumber}} isiniif kennameera. Yeroon tilmaamame daqiiqaa {{time}} dha.",
     "approachingTitle": "Dabareen Keessan Dhiyaateera!",
     "approachingMsg": "Tikkeettii {{ticketNumber}}: Namoota {{ahead}} qofatu isin dura jira. Gara {{room}} dhiyaadhaa.",
-    "calledTitle": "Waamamaa Jirtu!",
+    "calledTitle": "Dhukkubsataan waamame",
     "calledMsg": "Tikkeettii {{ticketNumber}}: Doktoorri kutaa {{room}} keessatti isin eegaa jira.",
-    "completedTitle": "Yaalli Keessan Xumurameera",
+    "completedTitle": "Marii xumurame",
     "completedMsg": "Tikkeettii {{ticketNumber}} yaalli xumurameera. Werfaa fayyadamuu keessaniif galatoomaa!",
     "offlineTitle": "Gaaffiin Bilbila Irratti Kuufame",
     "offlineMsg": "Intarneetiin waan hin jirreef kuufamee jira. Yommuu intarneetiin dhufu ofumaan ergama.",
     "syncTitle": "Wal-simsiifamuun Xumurame",
-    "syncMsg": "Tikkeettiin offline sarvarii kilinikaa waliin milkaa'inaan mirkanaa'eera!"
+    "syncMsg": "Tikkeettiin offline sarvarii kilinikaa waliin milkaa'inaan mirkanaa'eera!",
+    "join": "Tikeetiin {{ticketNumber}} uumame",
+    "offlinePendingTitle": "Offline kuufame",
+    "offlinePending": "Yeroo online taatan gaafanni keessan ni erga",
+    "syncSuccessTitle": "Wal-qunnamame",
+    "syncSuccess": "Tikeetiin {{ticketNumber}} kilinika waliin mirkanaa'e",
+    "called": "{{patientName}} waamameera",
+    "completed": "Daawwannaan xumurameera"
   },
   "pitch": {
     "dockTitle": "QINDEESSAA AGARSIISAA (PITCH GUIDE)",
@@ -313,6 +323,15 @@
         "title": "10. Xiinxala fi Carraa Daldalaa",
         "description": "Xiinxala dhangala'aa yaalaa, hir'ina yeroo 78% fi karoora daldalaa Yuunivarsiitii Jimmaa fi Itoophiyaa guutuuf qophaa'e ibsaa."
       }
-    ]
+    ],
+    "title": "Haala agarsiisaa qajeelfamaa"
+  },
+  "login": {
+    "title": "Seensa hojjettootaa",
+    "subtitle": "Hojjettoota kilinikaa fi bulchitoota",
+    "username": "Maqaa fayyadamaa",
+    "password": "Jecha iccitii",
+    "signIn": "Seeni",
+    "signingIn": "Seenaa jira…"
   }
 }

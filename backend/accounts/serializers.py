@@ -4,10 +4,20 @@ from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
+    staff_clinic_name = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'role', 'staff_clinic']
-        read_only_fields = ['id', 'role', 'staff_clinic']
+        fields = [
+            'id', 'username', 'email', 'first_name', 'last_name',
+            'role', 'staff_clinic', 'staff_clinic_name',
+        ]
+        read_only_fields = fields
+
+    def get_staff_clinic_name(self, obj):
+        if obj.staff_clinic_id and obj.staff_clinic:
+            return obj.staff_clinic.name
+        return None
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -55,7 +65,18 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        user = authenticate(username=data['username'], password=data['password'])
+        username = (data.get('username') or '').strip()
+        password = data.get('password') or ''
+        user = authenticate(username=username, password=password)
+        # Allow email as login identifier
+        if not user and '@' in username:
+            try:
+                match = User.objects.get(email__iexact=username)
+                user = authenticate(username=match.username, password=password)
+            except User.DoesNotExist:
+                user = None
+            except User.MultipleObjectsReturned:
+                user = None
         if not user:
             raise serializers.ValidationError('Invalid username or password.')
         if not user.is_active:

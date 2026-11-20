@@ -43,6 +43,9 @@ function Header() {
           <NavLink to="/admin" className={navLinkClass}>
             {t('nav.admin')}
           </NavLink>
+          <NavLink to="/login" className={navLinkClass}>
+            {t('nav.signIn') || 'Sign in'}
+          </NavLink>
           <NavLink to="/pitch" className={navLinkClass}>
             {t('nav.pitchMode')}
           </NavLink>
@@ -103,6 +106,7 @@ function Header() {
               { to: '/patient', label: t('nav.patient') },
               { to: '/clinic', label: t('nav.clinic') },
               { to: '/admin', label: t('nav.admin') },
+              { to: '/login', label: t('nav.signIn') || 'Sign in' },
               { to: '/pitch', label: t('nav.pitchMode') },
             ].map((item) => (
               <NavLink

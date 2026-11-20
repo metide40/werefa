@@ -82,3 +82,17 @@ npm run dev
 ```
 
 The React app loads clinics from the API, joins queues via the API, and clinic dashboard actions call the API (with local fallback if the server is offline).
+
+## Admin endpoints (ADMIN role)
+
+- `GET /api/admin/overview/` — real DB counts
+- `GET /api/admin/clinics/` — list/search clinics
+- `POST /api/admin/clinics/` — register clinic
+- `GET /api/admin/queues/` — platform queues (no patient PII)
+- `GET /api/admin/activity/` — activity feed from ActivityEvent
+
+## Clinic dashboard auth
+
+Staff must have `role=CLINIC_STAFF` and `staff_clinic` set.
+Dashboard uses `GET /api/auth/me/` for assigned clinic (not `clinics[0]`).
+Set `VITE_DEMO_AUTO_LOGIN=true` only for local demos.

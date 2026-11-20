@@ -61,10 +61,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# Prefer DJANGO_DB_PATH. Default to a writable path under /tmp for local demos
+# (some environments cannot reliably write SQLite inside the project tree).
+_default_db = os.environ.get('DJANGO_DB_PATH') or os.path.join(
+    os.environ.get('TMPDIR', '/tmp'), 'werfa_db.sqlite3'
+)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.environ.get('DJANGO_DB_PATH', str(BASE_DIR / 'db.sqlite3')),
+        'NAME': _default_db,
     }
 }
 

@@ -15,7 +15,8 @@
     "admin": "የስርዓት አስተዳዳሪ",
     "pitchMode": "የማሳያ አቀራረብ ሁነታ",
     "resetDemo": "ማሳያውን እንደገና ጀምር",
-    "language": "ቋንቋ"
+    "language": "ቋንቋ",
+    "signIn": "ግባ"
   },
   "priority": {
     "EMERGENCY": "አስቸኳይ",
@@ -126,7 +127,7 @@
     "joinVoice": "በድምፅ መመዝገብ (አፋን ኦሮሞ / አማርኛ / እንግሊዝኛ)",
     "joinForm": "በመደበኛ ቅፅ መመዝገብ",
     "joinQueueBtn": "ወረፋ ያዙ",
-    "joining": "ወረፋ እየተመዘገበ ነው...",
+    "joining": "በመቀላቀል ላይ…",
     "cancelTicket": "ትኬቴን ሰርዝ",
     "cancelConfirm": "የወረፋ ትኬትዎን መሰረዝ እርግጠኛ ነዎት?",
     "cancelledSuccess": "የወረፋ ትኬትዎ በተሳካ ሁኔታ ተሰርዟል።",
@@ -156,7 +157,9 @@
       "refreshStatus": "ሁኔታውን አድስ",
       "stepWaiting": "በወረፋ ላይ",
       "stepAlmost": "ተራዎ ሊደርስ ነው",
-      "stepCalled": "ወደ ህክምና ክፍሉ ይግቡ"
+      "stepCalled": "ወደ ህክምና ክፍሉ ይግቡ",
+      "pendingSync": "በመመሳሰል ላይ",
+      "trySync": "አሁን አስማማ"
     },
     "simulationControls": {
       "title": "የማሳያ መቆጣጠሪያ",
@@ -251,18 +254,25 @@
     "crowdingReduction": "የአዳራሽ መጨናነቅ ቅነሳ"
   },
   "notifications": {
-    "joinTitle": "ወረፋ ተይዟል",
+    "joinTitle": "ወረፋ ተቀላቅለዋል",
     "joinMsg": "በ{{clinic}} የትኬት ቁጥር {{ticketNumber}} ተሰጥቶዎታል። የሚገመተው ጊዜ {{time}} ደቂቃ ነው።",
     "approachingTitle": "ተራዎ ሊደርስ ጥቂት ቀርቷል!",
     "approachingMsg": "ትኬት {{ticketNumber}}፦ ከእርስዎ በፊት {{ahead}} ታካሚ ብቻ ቀርቷል። ወደ {{room}} ይቅረቡ።",
-    "calledTitle": "እየተጠሩ ነው!",
+    "calledTitle": "ታካሚ ተጠርቷል",
     "calledMsg": "ትኬት {{ticketNumber}}፦ ሀኪሙ በክፍል {{room}} እርስዎን እየጠበቀ ነው።",
-    "completedTitle": "ህክምናዎ ተጠናቋል",
+    "completedTitle": "ምክክር ተጠናቋል",
     "completedMsg": "የትኬት ቁጥር {{ticketNumber}} ህክምና ተጠናቋል። ወረፋን ስለተጠቀሙ እናመሰግናለን!",
     "offlineTitle": "ጥያቄው በስልክዎ ላይ ተቀምጧል",
     "offlineMsg": "በይነመረብ ስለሌለ ጥያቄዎ ተቀምጧል። ኢንተርኔት ሲመለስ በራሱ ይላካል።",
     "syncTitle": "ማመሳሰል ተጠናቋል",
-    "syncMsg": "ከመስመር ውጭ የተያዘው ወረፋ ከክሊኒኩ ጋር በተሳካ ሁኔታ ተረጋግጧል!"
+    "syncMsg": "ከመስመር ውጭ የተያዘው ወረፋ ከክሊኒኩ ጋር በተሳካ ሁኔታ ተረጋግጧል!",
+    "join": "ትኬት {{ticketNumber}} ተፈጥሯል",
+    "offlinePendingTitle": "ከመስመር ውጭ ተቀምጧል",
+    "offlinePending": "መስመር ሲመለስ ጥያቄዎ ይላካል",
+    "syncSuccessTitle": "ተመሳስሏል",
+    "syncSuccess": "ትኬት {{ticketNumber}} ከክሊኒኩ ጋር ተረጋግጧል",
+    "called": "{{patientName}} ተጠርተዋል",
+    "completed": "ጉብኝቱ ተጠናቋል"
   },
   "pitch": {
     "dockTitle": "የማሳያ መመሪያ (Pitch Guide)",
@@ -313,6 +323,15 @@
         "title": "10. የውጤት ትንተና እና የንግድ እድል",
         "description": "የሆስፒታል ፍሰት ትንተናውን፣ የ78% ጊዜ ቁጠባውን እና ለጅማና ለመላው ኢትዮጵያ ያለውን የንግድ እምቅ አቅም አብራሩ።"
       }
-    ]
+    ],
+    "title": "የማሳያ ሁነታ"
+  },
+  "login": {
+    "title": "የሰራተኛ መግቢያ",
+    "subtitle": "የክሊኒክ ሰራተኞች እና አስተዳዳሪዎች",
+    "username": "የተጠቃሚ ስም",
+    "password": "የይለፍ ቃል",
+    "signIn": "ግባ",
+    "signingIn": "በመግባት ላይ…"
   }
 }
