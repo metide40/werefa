@@ -1,0 +1,24 @@
+# Render.com Blueprint — optional one-click style deploy for Werfa demo
+services:
+  - type: web
+    name: werfa-demo
+    runtime: python
+    rootDir: backend
+    buildCommand: |
+      pip install -r requirements.txt
+      cd .. && npm install && npm run build
+      cd backend && python manage.py migrate --noinput && python manage.py seed_demo && python manage.py collectstatic --noinput
+    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_ALLOW_ALL_HOSTS
+        value: "1"
+      - key: DJANGO_CORS_ALLOW_ALL
+        value: "1"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DB_PATH
+        value: /tmp/werfa_db.sqlite3
+      - key: PYTHON_VERSION
+        value: "3.12.0"

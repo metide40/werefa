@@ -13,7 +13,16 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# Demo-friendly hosts: set DJANGO_ALLOWED_HOSTS or DJANGO_ALLOW_ALL_HOSTS=1 for tunnels
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get(
+    'DJANGO_ALLOWED_HOSTS',
+    'localhost,127.0.0.1,.trycloudflare.com',
+).split(',') if h.strip()]
+# Leading-dot subdomain matching for Cloudflare quick tunnels
+if '.trycloudflare.com' not in ALLOWED_HOSTS and 'trycloudflare.com' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('.trycloudflare.com')
+if os.environ.get('DJANGO_ALLOW_ALL_HOSTS', '1' if DEBUG else '0') == '1':
+    ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -34,6 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -86,17 +96,33 @@ TIME_ZONE = 'Africa/Addis_Ababa'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Built React app (npm run build → dist/) copied or linked here for single-service demo
+FRONTEND_DIST = BASE_DIR.parent / 'dist'
+if FRONTEND_DIST.is_dir():
+    STATICFILES_DIRS = [FRONTEND_DIST]
+
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+    },
+}
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://localhost:4173',
-    'http://127.0.0.1:4173',
-]
+_cors = os.environ.get(
+    'DJANGO_CORS_ORIGINS',
+    'http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173',
+)
+CORS_ALLOWED_ORIGINS = [o.strip() for o in _cors.split(',') if o.strip()]
+# For campus demo / single-origin deploy you can set DJANGO_CORS_ALLOW_ALL=1
+CORS_ALLOW_ALL_ORIGINS = os.environ.get('DJANGO_CORS_ALLOW_ALL', '0') == '1'
 CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
