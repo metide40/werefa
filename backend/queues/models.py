@@ -14,6 +14,7 @@ class QueueTicket(models.Model):
         COMPLETED = 'COMPLETED', 'Completed'
         CANCELLED = 'CANCELLED', 'Cancelled'
         NO_SHOW = 'NO_SHOW', 'No Show'
+        HELD = 'HELD', 'Held'
 
     PRIORITY_ORDER = {
         Priority.EMERGENCY: 0,

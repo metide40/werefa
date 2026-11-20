@@ -126,6 +126,46 @@ class Command(BaseCommand):
         staff.save()
         Token.objects.get_or_create(user=staff)
 
+        # Staff for Shenen Gibe Primary Hospital
+        staff_shenen, _ = User.objects.get_or_create(
+            username='clinic_staff_shenen',
+            defaults={
+                'email': 'staff.shenen@werfa.demo',
+                'first_name': 'Nurse',
+                'last_name': 'Shenen',
+                'role': User.Role.CLINIC_STAFF,
+                'staff_clinic': shenen,
+                'is_staff': True,
+            },
+        )
+        staff_shenen.set_password('werfa-staff-shenen')
+        staff_shenen.staff_clinic = shenen
+        staff_shenen.role = User.Role.CLINIC_STAFF
+        staff_shenen.is_staff = True
+        staff_shenen.is_active = True
+        staff_shenen.save()
+        Token.objects.get_or_create(user=staff_shenen)
+
+        # Triage nurse (JUSH)
+        triage, _ = User.objects.get_or_create(
+            username='triage_nurse',
+            defaults={
+                'email': 'triage@werfa.demo',
+                'first_name': 'Triage',
+                'last_name': 'Nurse',
+                'role': User.Role.TRIAGE_NURSE,
+                'staff_clinic': jush,
+                'is_staff': True,
+            },
+        )
+        triage.set_password('werfa-triage-demo')
+        triage.staff_clinic = jush
+        triage.role = User.Role.TRIAGE_NURSE
+        triage.is_staff = True
+        triage.is_active = True
+        triage.save()
+        Token.objects.get_or_create(user=triage)
+
         # Patient user
         patient_user, created = User.objects.get_or_create(
             username='patient',
@@ -178,6 +218,8 @@ class Command(BaseCommand):
         self.stdout.write('')
         self.stdout.write('=== DEMO CREDENTIALS (sample accounts only) ===')
         self.stdout.write('  Admin:        username=admin         password=werfa-admin-demo')
-        self.stdout.write('  Clinic Staff: username=clinic_staff  password=werfa-staff-demo')
-        self.stdout.write('  Patient:      username=patient       password=werfa-patient-demo')
+        self.stdout.write('  Clinic Staff (JUSH):   username=clinic_staff         password=werfa-staff-demo')
+        self.stdout.write('  Clinic Staff (Shenen): username=clinic_staff_shenen  password=werfa-staff-shenen')
+        self.stdout.write('  Triage Nurse: username=triage_nurse       password=werfa-triage-demo')
+        self.stdout.write('  Patient:      username=patient            password=werfa-patient-demo')
         self.stdout.write('================================================')

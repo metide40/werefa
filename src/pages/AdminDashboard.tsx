@@ -19,6 +19,7 @@ const adminMenu = [
   { to: '/admin/clinics', icon: Hospital, label: 'Partner Clinics' },
   { to: '/admin/queues', icon: Users, label: 'Live Queues' },
   { to: '/admin/activity', icon: Activity, label: 'System Activity' },
+  { to: '/admin/emergencies', icon: Activity, label: 'Emergencies' },
   { to: '/admin/health', icon: HeartPulse, label: 'Platform Health' },
   { to: '/admin/settings', icon: Settings, label: 'Settings' },
 ];

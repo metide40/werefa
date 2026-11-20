@@ -25,10 +25,19 @@ import ClinicPatientsPage from './pages/clinic/PatientsPage';
 import ClinicAnalyticsPage from './pages/clinic/AnalyticsPage';
 import ClinicSettingsPage from './pages/clinic/SettingsPage';
 
+import TriageDashboard from './pages/TriageDashboard';
+import TriageOverviewPage from './pages/triage/OverviewPage';
+import TriagePendingPage from './pages/triage/PendingPage';
+import TriageAssessPage from './pages/triage/AssessPage';
+import TriageEmergenciesPage from './pages/triage/EmergenciesPage';
+import TriageHistoryPage from './pages/triage/HistoryPage';
+import TriageSettingsPage from './pages/triage/SettingsPage';
+import AdminEmergenciesPage from './pages/admin/EmergenciesPage';
+
 function AppShell() {
   const location = useLocation();
   const isWorkspace =
-    location.pathname.startsWith('/clinic') || location.pathname.startsWith('/admin');
+    location.pathname.startsWith('/clinic') || location.pathname.startsWith('/admin') || location.pathname.startsWith('/triage');
   const isLanding = location.pathname === '/';
 
   return (
@@ -53,6 +62,7 @@ function AppShell() {
             <Route path="queues" element={<AdminQueuesPage />} />
             <Route path="activity" element={<AdminActivityPage />} />
             <Route path="health" element={<AdminHealthPage />} />
+            <Route path="emergencies" element={<AdminEmergenciesPage />} />
             <Route path="settings" element={<AdminSettingsPage />} />
           </Route>
 
@@ -64,6 +74,16 @@ function AppShell() {
             <Route path="patients" element={<ClinicPatientsPage />} />
             <Route path="analytics" element={<ClinicAnalyticsPage />} />
             <Route path="settings" element={<ClinicSettingsPage />} />
+          </Route>
+
+          <Route path="/triage" element={<TriageDashboard />}>
+            <Route index element={<Navigate to="overview" replace />} />
+            <Route path="overview" element={<TriageOverviewPage />} />
+            <Route path="pending" element={<TriagePendingPage />} />
+            <Route path="assess" element={<TriageAssessPage />} />
+            <Route path="emergencies" element={<TriageEmergenciesPage />} />
+            <Route path="history" element={<TriageHistoryPage />} />
+            <Route path="settings" element={<TriageSettingsPage />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

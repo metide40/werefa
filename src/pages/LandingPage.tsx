@@ -82,7 +82,7 @@ function LandingPage() {
                   {t('landing.ctaPatient')}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link to="/clinic" className="btn-secondary text-base px-7 py-3.5">
+                <Link to="/login?portal=clinic" className="btn-secondary text-base px-7 py-3.5">
                   {t('landing.ctaClinic')}
                 </Link>
               </div>

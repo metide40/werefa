@@ -5,6 +5,7 @@ from django.db import models
 class User(AbstractUser):
     class Role(models.TextChoices):
         PATIENT = 'PATIENT', 'Patient'
+        TRIAGE_NURSE = 'TRIAGE_NURSE', 'Triage Nurse'
         CLINIC_STAFF = 'CLINIC_STAFF', 'Clinic Staff'
         ADMIN = 'ADMIN', 'Administrator'
 
@@ -28,6 +29,10 @@ class User(AbstractUser):
     @property
     def is_patient(self):
         return self.role == self.Role.PATIENT
+
+    @property
+    def is_triage_nurse(self):
+        return self.role == self.Role.TRIAGE_NURSE
 
     @property
     def is_clinic_staff(self):

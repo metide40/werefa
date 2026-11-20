@@ -20,6 +20,12 @@ function Header() {
       isActive ? 'text-brand-gold' : 'text-[var(--text-muted)] hover:text-[var(--text)]'
     }`;
 
+  const publicLinks = [
+    { to: '/patient', label: t('nav.patient') },
+    { to: '/login', label: t('nav.signIn') || 'Sign in' },
+    { to: '/pitch', label: t('nav.pitchMode') },
+  ];
+
   return (
     <header
       className="sticky top-0 z-50 border-b backdrop-blur-md"
@@ -34,21 +40,11 @@ function Header() {
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">
-          <NavLink to="/patient" className={navLinkClass}>
-            {t('nav.patient')}
-          </NavLink>
-          <NavLink to="/clinic" className={navLinkClass}>
-            {t('nav.clinic')}
-          </NavLink>
-          <NavLink to="/admin" className={navLinkClass}>
-            {t('nav.admin')}
-          </NavLink>
-          <NavLink to="/login" className={navLinkClass}>
-            {t('nav.signIn') || 'Sign in'}
-          </NavLink>
-          <NavLink to="/pitch" className={navLinkClass}>
-            {t('nav.pitchMode')}
-          </NavLink>
+          {publicLinks.map((item) => (
+            <NavLink key={item.to} to={item.to} className={navLinkClass}>
+              {item.label}
+            </NavLink>
+          ))}
         </nav>
 
         <div className="flex items-center gap-1.5">
@@ -65,8 +61,8 @@ function Header() {
             )}
           </button>
 
-          <div className="relative flex items-center">
-            <Globe className="pointer-events-none absolute left-2.5 h-3.5 w-3.5 text-[var(--text-muted)]" />
+          <div className="relative">
+            <Globe className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--text-muted)]" />
             <select
               value={i18n.language}
               onChange={(e) => changeLang(e.target.value)}
@@ -102,13 +98,7 @@ function Header() {
           style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg)' }}
         >
           <nav className="section-container flex flex-col gap-1 py-3">
-            {[
-              { to: '/patient', label: t('nav.patient') },
-              { to: '/clinic', label: t('nav.clinic') },
-              { to: '/admin', label: t('nav.admin') },
-              { to: '/login', label: t('nav.signIn') || 'Sign in' },
-              { to: '/pitch', label: t('nav.pitchMode') },
-            ].map((item) => (
+            {publicLinks.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}

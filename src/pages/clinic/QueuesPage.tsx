@@ -5,6 +5,8 @@ import {
   callNext as apiCallNext,
   completeTicket as apiComplete,
   noShowTicket as apiNoShow,
+  fetchEmergencies,
+  acknowledgeEmergency,
 } from '../../api/client';
 
 export default function ClinicQueuesPage() {
@@ -13,11 +15,15 @@ export default function ClinicQueuesPage() {
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [emergencies, setEmergencies] = useState<any[]>([]);
   const mounted = useRef(true);
 
   const load = async () => {
     try {
-      const q = await fetchClinicQueue({ status });
+      const [q, em] = await Promise.all([
+        fetchClinicQueue({ status }),
+        fetchEmergencies({ active: 'true' }).catch(() => []),
+      ]);
       if (!mounted.current) return;
       let list = q || [];
       if (search) {
@@ -25,6 +31,7 @@ export default function ClinicQueuesPage() {
         list = list.filter((t: any) => String(t.ticketNumber || '').toLowerCase().includes(s));
       }
       setQueue(list);
+      setEmergencies(em || []);
       setError(null);
     } catch (e: any) {
       if (mounted.current) setError(e?.message || 'Failed to load queue');
@@ -102,6 +109,37 @@ export default function ClinicQueuesPage() {
         <input className="input-field max-w-xs text-sm" placeholder="Search ticket #" value={search} onChange={(e) => setSearch(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && load()} />
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
+
+      {emergencies.length > 0 && (
+        <div className="space-y-2">
+          {emergencies.map((em) => (
+            <div key={em.id} className="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-900">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <p className="font-bold">Emergency {em.case_id}</p>
+                  <p className="text-xs">{em.department_name || 'Department TBD'} · {em.status}</p>
+                </div>
+                {em.status === 'REPORTED' && (
+                  <button
+                    type="button"
+                    className="btn-secondary text-xs"
+                    onClick={async () => {
+                      try {
+                        await acknowledgeEmergency(em.id);
+                        await load();
+                      } catch (err: any) {
+                        setError(err?.message);
+                      }
+                    }}
+                  >
+                    Acknowledge
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {serving.length > 0 && (
         <div className="card p-4">

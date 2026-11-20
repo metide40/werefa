@@ -163,7 +163,7 @@ export type AuthUser = {
   email: string;
   first_name: string;
   last_name: string;
-  role: 'PATIENT' | 'CLINIC_STAFF' | 'ADMIN';
+  role: 'PATIENT' | 'TRIAGE_NURSE' | 'CLINIC_STAFF' | 'ADMIN';
   staff_clinic: number | null;
   staff_clinic_name: string | null;
 };
@@ -207,4 +207,37 @@ export async function createAdminClinic(body: Record<string, unknown>) {
 
 export async function changePassword(old_password: string, new_password: string) {
   return api.post<{ detail: string }>('/auth/change-password/', { old_password, new_password });
+}
+
+// --- Triage & Emergency ---
+export async function fetchTriageOverview() {
+  return api.get<any>('/triage/overview/');
+}
+export async function fetchTriagePending() {
+  return api.get<any[]>('/triage/pending/');
+}
+export async function submitTriageAssessment(body: Record<string, unknown>) {
+  return api.post<any>('/triage/assessments/', body);
+}
+export async function fetchTriageAssessments() {
+  return api.get<any[]>('/triage/assessments/list/');
+}
+export async function fetchEmergencies(params?: { active?: string; status?: string }) {
+  const q = new URLSearchParams();
+  if (params?.active) q.set('active', params.active);
+  if (params?.status) q.set('status', params.status);
+  const qs = q.toString();
+  return api.get<any[]>(`/triage/emergencies/${qs ? `?${qs}` : ''}`);
+}
+export async function acknowledgeEmergency(id: number | string) {
+  return api.post<any>(`/triage/emergencies/${id}/acknowledge/`);
+}
+export async function updateEmergencyStatus(id: number | string, status: string) {
+  return api.post<any>(`/triage/emergencies/${id}/status/`, { status });
+}
+export async function fetchAdminEmergencies(params?: { clinic_id?: string }) {
+  const q = new URLSearchParams();
+  if (params?.clinic_id) q.set('clinic_id', params.clinic_id);
+  const qs = q.toString();
+  return api.get<any>(`/admin/emergencies/${qs ? `?${qs}` : ''}`);
 }

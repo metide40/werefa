@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'clinics',
     'patients',
     'queues',
+    'triage',
 ]
 
 MIDDLEWARE = [

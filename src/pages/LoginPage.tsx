@@ -6,13 +6,13 @@ import { Building2, Shield, LogIn, AlertCircle } from 'lucide-react';
 import { login, setToken, type AuthUser } from '../api/client';
 import { Logo } from '../components/Logo';
 
-type Portal = 'clinic' | 'admin';
+type Portal = 'clinic' | 'admin' | 'triage';
 
 function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const initialPortal = (params.get('portal') === 'admin' ? 'admin' : 'clinic') as Portal;
+  const initialPortal = (['admin', 'triage'].includes(params.get('portal') || '') ? params.get('portal') : 'clinic') as Portal;
 
   const [portal, setPortal] = useState<Portal>(initialPortal);
   const [username, setUsername] = useState('');
@@ -25,6 +25,10 @@ function LoginPage() {
       setUsername('admin');
       setPassword('werfa-admin-demo');
       setPortal('admin');
+    } else if (role === 'triage') {
+      setUsername('triage_nurse');
+      setPassword('werfa-triage-demo');
+      setPortal('triage');
     } else {
       setUsername('clinic_staff');
       setPassword('werfa-staff-demo');
@@ -49,6 +53,17 @@ function LoginPage() {
           return;
         }
         navigate('/admin/overview', { replace: true });
+        return;
+      }
+
+      if (portal === 'triage') {
+        if (user.role !== 'TRIAGE_NURSE' && user.role !== 'ADMIN') {
+          setToken(null);
+          localStorage.removeItem('werfa_user');
+          setError('This account is not a triage nurse.');
+          return;
+        }
+        navigate('/triage/overview', { replace: true });
         return;
       }
 
@@ -86,30 +101,15 @@ function LoginPage() {
 
         <div className="card p-6 sm:p-7">
           {/* Portal toggle */}
-          <div className="mb-5 grid grid-cols-2 gap-2 rounded-xl bg-brand-ivory p-1 dark:bg-black/20">
-            <button
-              type="button"
-              onClick={() => setPortal('clinic')}
-              className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
-                portal === 'clinic'
-                  ? 'bg-brand-charcoal text-white shadow-soft'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text)]'
-              }`}
-            >
-              <Building2 className="h-4 w-4" />
-              Clinic
+          <div className="mb-5 grid grid-cols-3 gap-1 rounded-xl bg-brand-ivory p-1 dark:bg-black/20">
+            <button type="button" onClick={() => setPortal('clinic')} className={`flex items-center justify-center gap-1 rounded-lg px-2 py-2.5 text-xs font-semibold transition sm:text-sm ${portal === 'clinic' ? 'bg-brand-charcoal text-white shadow-soft' : 'text-[var(--text-muted)]'}`}>
+              <Building2 className="h-3.5 w-3.5" /> Clinic
             </button>
-            <button
-              type="button"
-              onClick={() => setPortal('admin')}
-              className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
-                portal === 'admin'
-                  ? 'bg-brand-charcoal text-white shadow-soft'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text)]'
-              }`}
-            >
-              <Shield className="h-4 w-4" />
-              Admin
+            <button type="button" onClick={() => setPortal('triage')} className={`flex items-center justify-center gap-1 rounded-lg px-2 py-2.5 text-xs font-semibold transition sm:text-sm ${portal === 'triage' ? 'bg-brand-charcoal text-white shadow-soft' : 'text-[var(--text-muted)]'}`}>
+              Triage
+            </button>
+            <button type="button" onClick={() => setPortal('admin')} className={`flex items-center justify-center gap-1 rounded-lg px-2 py-2.5 text-xs font-semibold transition sm:text-sm ${portal === 'admin' ? 'bg-brand-charcoal text-white shadow-soft' : 'text-[var(--text-muted)]'}`}>
+              <Shield className="h-3.5 w-3.5" /> Admin
             </button>
           </div>
 
@@ -161,6 +161,9 @@ function LoginPage() {
             <div className="flex flex-wrap gap-2">
               <button type="button" className="btn-ghost text-xs py-1.5 px-3" onClick={() => fillDemo('clinic')}>
                 Use clinic staff
+              </button>
+              <button type="button" className="btn-ghost text-xs py-1.5 px-3" onClick={() => fillDemo('triage')}>
+                Use triage
               </button>
               <button type="button" className="btn-ghost text-xs py-1.5 px-3" onClick={() => fillDemo('admin')}>
                 Use admin
